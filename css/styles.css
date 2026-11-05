@@ -127,7 +127,7 @@ a:hover { color: #2f28c9; }
   color: inherit;
 }
 
-.brand img { width: 52px; height: 48px; }
+.brand img { width: 48px; height: auto; }
 
 .brand-name {
   font-family: Nunito, "Segoe UI", sans-serif;
@@ -383,7 +383,7 @@ h2 { font-size: 32px; margin: 0 0 8px; }
 }
 
 .product-art {
-  background: linear-gradient(180deg, #f4f2ff, #ffffff);
+  background: #fff;
   border: 1px solid var(--line);
   border-radius: 24px;
   min-height: 240px;
@@ -392,7 +392,7 @@ h2 { font-size: 32px; margin: 0 0 8px; }
   padding: 20px;
 }
 
-.product-art svg { width: 160px; height: 160px; }
+.product-art img { width: min(100%, 220px); height: auto; display: block; }
 
 .kicker-row {
   display: flex;
