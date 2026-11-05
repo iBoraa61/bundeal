@@ -282,6 +282,29 @@ h1 { font-size: 56px; margin: 0; }
   padding: 4px 10px;
 }
 
+.timer-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: #fff4e5;
+  color: #9a4d00;
+  font-family: Nunito, sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 4px 10px;
+}
+
+.timer-line {
+  margin: 0 0 8px;
+  color: #1c2b40;
+}
+
+.timer-line b {
+  font-family: Nunito, sans-serif;
+  font-weight: 800;
+  color: #9a4d00;
+}
+
 .price-card {
   background: var(--navy);
   color: var(--white);
