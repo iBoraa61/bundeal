@@ -464,6 +464,45 @@ h2 { font-size: 32px; margin: 0 0 8px; }
   font-weight: 700;
 }
 
+.suggestion-form {
+  display: grid;
+  gap: 16px;
+  max-width: 760px;
+}
+
+.suggestion-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--navy);
+  font-family: Nunito, sans-serif;
+  font-weight: 700;
+}
+
+.suggestion-form input,
+.suggestion-form textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--ink);
+  font: 400 17px/1.4 "Source Sans 3", "Segoe UI", sans-serif;
+  padding: 11px 13px;
+}
+
+.suggestion-form textarea {
+  resize: vertical;
+}
+
+.suggestion-form input:focus,
+.suggestion-form textarea:focus {
+  border-color: var(--deal);
+  outline: 3px solid rgba(71, 58, 246, 0.14);
+}
+
+.suggestion-form .button {
+  justify-self: start;
+}
+
 .notice, .placeholder {
   border-radius: 16px;
   padding: 14px 16px;
