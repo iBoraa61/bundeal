@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Example: Headphones – BunDeal</title>
+  <meta name="description" content="BunDeal calculation example with base cashback, a direct referral bonus and monthly settlement rounds.">
+  <link rel="icon" href="assets/logo-icon.png" type="image/png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip" href="#content">Skip to content</a>
+  <div class="proto">Prototype. This is a calculation example, not an active offer.</div>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index-en.html">
+        <img src="assets/logo.svg?v=4" alt="BunDeal, Gemeinsam mehr sparen.">
+      </a>
+      <div class="header-controls">
+        <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+          <a href="index-en.html#process">Process</a>
+          <a href="example-en.html" aria-current="page">Example</a>
+          <a href="legal-notice-en.html">Legal notice</a>
+        </nav>
+        <a class="language-switch" href="beispiel-take3.html" lang="de" hreflang="de" aria-label="Zur deutschen Website wechseln">DE</a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="content">
+    <section>
+      <div class="wrap deal-layout">
+        <div class="product-art">
+          <img src="assets/headphones.png?v=2" alt="Black over-ear headphones">
+        </div>
+        <div>
+          <div class="kicker-row">
+            <span class="pill">Example</span>
+            <span class="timer-chip">November round</span>
+          </div>
+          <h1>Bluetooth headphones</h1>
+          <p class="fine">You pay the merchant</p>
+          <p class="amount">€100</p>
+          <p class="fine">Assumption for this example only: €10 confirmed commission for each retained purchase. This is not a guaranteed market price.</p>
+          <h2 style="font-size:22px;margin-top:22px">Example allocation</h2>
+          <ul class="tier-list">
+            <li><span>35% base cashback</span><b>€3.50</b></li>
+            <li><span>15% direct referral bonus</span><b>€1.50</b></li>
+            <li><span>50% BunDeal</span><b>€5.00</b></li>
+          </ul>
+          <p class="fine">This allocation is a concept example, not an active offer.</p>
+          <div class="actions">
+            <button class="button" type="button" disabled>Log in and visit merchant</button>
+            <button class="button button-secondary" type="button" data-copy-link>Copy example link</button>
+          </div>
+          <p class="status" data-copy-status role="status"></p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap grid-2">
+        <article class="panel">
+          <div class="progress-top">
+            <h2 style="font-size:24px;margin:0">Your monthly round</h2>
+            <strong>November</strong>
+          </div>
+          <div class="bar" role="img" aria-label="Example monthly round for November"><span></span></div>
+          <p class="timer-line"><b>Settlement after the monthly round.</b> The deal may remain online with a new round in December.</p>
+          <p>Pending: your own purchase and three direct referrals. Nothing can be paid until the commission has been confirmed.</p>
+        </article>
+        <article class="notice">
+          <h2 style="font-size:24px;margin-top:0">Login connects purchase and referral</h2>
+          <p>You are logged in to BunDeal before clicking through to the merchant. BunDeal stores the deal, round, click and direct referrer. The network reports the transaction status later.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>Calculation after confirmation</h2>
+        <p class="section-intro">Assumption: each retained purchase generates €10 confirmed commission. Payment is released only after the affiliate network confirms the relevant purchase.</p>
+        <div class="grid-2">
+          <article class="outcome">
+            <h3>Your own confirmed purchase</h3>
+            <p>35% of €10 produces €3.50 base cashback.</p>
+          </article>
+          <article class="outcome">
+            <h3>Three direct referrals</h3>
+            <p>3 × 15% of €10 produces an additional €4.50 referral bonus.</p>
+          </article>
+          <article class="outcome">
+            <h3>Your payment in this example</h3>
+            <p>€3.50 base cashback plus a €4.50 referral bonus produces a total of €8.00.</p>
+          </article>
+          <article class="outcome">
+            <h3>No referral chain</h3>
+            <p>If a referred buyer later refers someone else, only that buyer receives the direct bonus. You receive nothing from the second level.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap panel">
+        <h2>Conditions in this example</h2>
+        <ul>
+          <li>The deal remains online while the offer, price and affiliate link are current. Each purchase belongs to a clearly defined monthly round.</li>
+          <li>Attribution is possible only when the buyer is logged in to BunDeal before clicking through and affiliate tracking works correctly.</li>
+          <li>After an attributed purchase, the user may receive a personal referral link. Only direct referrals are rewarded.</li>
+          <li>A full return or rejection reduces the confirmed commission for that purchase to zero. It therefore generates neither base cashback nor a referral bonus.</li>
+          <li>The bonus is a possible payment from BunDeal, not a merchant discount or price reduction.</li>
+          <li>The example allocation of 35% / 15% / 50% must be reviewed contractually, commercially and for tax purposes before a pilot.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <strong>BunDeal</strong>
+        <p>Save more together.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <a href="example-en.html">Example deal</a>
+        <a href="legal-notice-en.html">Legal notice</a>
+        <a href="privacy-en.html">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+  <script src="js/site.js" defer></script>
+</body>
+</html>
