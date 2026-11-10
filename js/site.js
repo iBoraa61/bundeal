@@ -1,4 +1,5 @@
 (function () {
+  var english = document.documentElement.lang === "en";
   var toggle = document.querySelector(".nav-toggle");
   var nav = document.querySelector(".site-nav");
 
@@ -22,7 +23,7 @@
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url).then(function () {
-          show("Link kopiert. Du kannst ihn teilen.");
+          show(english ? "Link copied. You can now share it." : "Link kopiert. Du kannst ihn teilen.");
         }).catch(function () {
           show(url);
         });
@@ -43,8 +44,17 @@
       if (!suggestionForm.reportValidity()) return;
 
       var data = new FormData(suggestionForm);
-      var subject = "Deal-Vorschlag für BunDeal";
-      var body = [
+      var subject = english ? "Deal suggestion for BunDeal" : "Deal-Vorschlag für BunDeal";
+      var body = english ? [
+        "Link to the offer:",
+        data.get("url"),
+        "",
+        "Why is this a good deal?",
+        data.get("reason"),
+        "",
+        "Email for follow-up questions:",
+        data.get("email") || "not provided"
+      ].join("\n") : [
         "Link zum Angebot:",
         data.get("url"),
         "",
@@ -56,7 +66,9 @@
       ].join("\n");
 
       if (suggestionStatus) {
-        suggestionStatus.textContent = "Dein E-Mail-Programm wird geöffnet. BunDeal prüft den Vorschlag vor einer Veröffentlichung.";
+        suggestionStatus.textContent = english
+          ? "Your email application will open. BunDeal reviews every suggestion before publication."
+          : "Dein E-Mail-Programm wird geöffnet. BunDeal prüft den Vorschlag vor einer Veröffentlichung.";
       }
 
       window.location.href = "mailto:info@bundeal.de?subject=" +
