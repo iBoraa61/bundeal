@@ -129,6 +129,33 @@ a:hover { color: #2f28c9; }
 
 .brand img { height: 76px; width: 312px; max-width: none; }
 
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.language-switch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid #d5dbe8;
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--navy);
+  font-family: Nunito, sans-serif;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.language-switch:hover {
+  background: #eef0ff;
+  color: var(--deal);
+}
+
 .brand-name {
   font-family: Nunito, "Segoe UI", sans-serif;
   font-weight: 800;
@@ -565,8 +592,9 @@ h2 { font-size: 32px; margin: 0 0 8px; }
     display: grid;
   }
   .amount { font-size: 52px; }
-  .brand img { height: 58px; width: 238px; }
+  .brand img { height: auto; width: min(238px, 48vw); }
   .nav-toggle { display: inline-flex; }
+  .header-controls { gap: 6px; }
   .site-nav {
     display: none;
     position: absolute;
