@@ -41,15 +41,14 @@ Understand the current project and define a safe target before backend work.
 - Live repository identified as `iBoraa61/bundeal`.
 - Branch `feature/bundeal-backend` created from `main`.
 - Phase 0 documents committed to the feature branch.
-- Desktop working folder and GitHub Pages root layout remain different and must be reconciled carefully in Phase 1.
+- Repository layout confirmed: GitHub Pages serves the repository root through `CNAME` `bundeal.de`.
+- Partner files remain outside this repository.
 
 ### Approval gate
 
-- Confirm architecture.
+- Confirm architecture and root-level file layout.
 - Resolve open attribution rules.
-- Provide the GitHub repository URL or owner/name.
-- Confirm the local/deployed repository layout.
-- Confirm creation of a separate Supabase development project.
+- Create a separate Supabase development project.
 
 ## Phase 1 — Technical foundation
 
@@ -67,9 +66,9 @@ Create a reproducible, non-production Supabase foundation without changing the p
 - `supabase/migrations/<timestamp>_rls_helpers.sql`
 - `supabase/seed.sql`
 - `supabase/tests/foundation.sql`
-- `site/js/config.example.js`
-- `site/js/config.js` or generated equivalent
-- `site/js/supabase-client.js`
+- `js/config.example.js`
+- `js/config.js` or generated equivalent
+- `js/supabase-client.js`
 
 ### Scope
 
@@ -110,12 +109,12 @@ Implement secure user registration and account sessions.
 
 ### Files expected
 
-- `site/login.html`
-- `site/register.html`
-- `site/reset-password.html`
-- `site/dashboard.html`
-- `site/js/auth.js`
-- `site/js/utils.js`
+- `login.html`
+- `register.html`
+- `reset-password.html`
+- `dashboard.html`
+- `js/auth.js`
+- `js/utils.js`
 - `supabase/migrations/<timestamp>_profiles_and_roles.sql`
 - `supabase/migrations/<timestamp>_profile_rls.sql`
 - authentication tests
@@ -153,12 +152,12 @@ Replace hardcoded deal content with reviewed database-backed deals while preserv
 
 ### Files expected
 
-- `site/deals.html`
-- `site/deal.html`
-- `site/submit-deal.html`
-- `site/admin.html` moderation section
-- `site/js/deals.js`
-- `site/js/admin.js`
+- `deals.html`
+- `deal.html`
+- `submit-deal.html`
+- `admin.html` moderation section
+- `js/deals.js`
+- `js/admin.js`
 - deal/merchant/category/submission migrations
 - deal RLS tests
 
@@ -201,7 +200,7 @@ Implement direct-only referral links with documented attribution behavior and no
 
 ### Files expected
 
-- `site/js/referrals.js`
+- `js/referrals.js`
 - `supabase/functions/resolve-referral/` or consolidated redirect function
 - referral and attribution migrations
 - referral security tests
@@ -237,7 +236,7 @@ Create network-neutral outbound tracking and safe simulation/import flows.
 
 ### Files expected
 
-- `site/js/tracking.js`
+- `js/tracking.js`
 - `supabase/functions/affiliate-redirect/`
 - `supabase/functions/affiliate-webhook/` only if supported
 - `supabase/functions/import-transactions/`
@@ -326,9 +325,9 @@ Expose clear, user-owned account information without weakening financial securit
 
 ### Files expected
 
-- `site/dashboard.html`
-- `site/css/dashboard.css`
-- `site/js/cashback.js`
+- `dashboard.html`
+- `css/dashboard.css`
+- `js/cashback.js`
 - dashboard views or RPC migrations
 - dashboard access tests
 
@@ -361,9 +360,9 @@ Provide controlled operational tools without exposing service credentials to the
 
 ### Files expected
 
-- `site/admin.html`
-- `site/css/admin.css`
-- `site/js/admin.js`
+- `admin.html`
+- `css/admin.css`
+- `js/admin.js`
 - admin Edge Function operations
 - admin read models and audit migrations
 - authorization tests

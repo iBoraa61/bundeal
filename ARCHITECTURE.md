@@ -90,44 +90,44 @@ Responsible for:
 
 ## 4. Recommended application structure
 
-The existing local `site/` directory remains the deployable frontend until the actual repository layout is confirmed.
+The deployed frontend stays at the repository root. New pages and scripts are added beside the existing files. A nested `site/` directory would break the current GitHub Pages deployment.
 
 ```text
-BunDeal/
-├─ site/
-│  ├─ index.html
-│  ├─ index-en.html
-│  ├─ deals.html
-│  ├─ deal.html
-│  ├─ login.html
-│  ├─ register.html
-│  ├─ reset-password.html
-│  ├─ dashboard.html
-│  ├─ submit-deal.html
-│  ├─ admin.html
-│  ├─ beispiel-take3.html
-│  ├─ example-en.html
-│  ├─ impressum.html
-│  ├─ legal-notice-en.html
-│  ├─ datenschutz.html
-│  ├─ privacy-en.html
-│  ├─ css/
-│  │  ├─ styles.css
-│  │  ├─ dashboard.css
-│  │  └─ admin.css
-│  ├─ js/
-│  │  ├─ config.example.js
-│  │  ├─ config.js
-│  │  ├─ supabase-client.js
-│  │  ├─ auth.js
-│  │  ├─ deals.js
-│  │  ├─ referrals.js
-│  │  ├─ tracking.js
-│  │  ├─ cashback.js
-│  │  ├─ admin.js
-│  │  ├─ utils.js
-│  │  └─ site.js
-│  └─ assets/
+bundeal/
+├─ index.html
+├─ index-en.html
+├─ deals.html
+├─ deal.html
+├─ login.html
+├─ register.html
+├─ reset-password.html
+├─ dashboard.html
+├─ submit-deal.html
+├─ admin.html
+├─ beispiel-take3.html
+├─ example-en.html
+├─ impressum.html
+├─ legal-notice-en.html
+├─ datenschutz.html
+├─ privacy-en.html
+├─ css/
+│  ├─ styles.css
+│  ├─ dashboard.css
+│  └─ admin.css
+├─ js/
+│  ├─ config.example.js
+│  ├─ config.js
+│  ├─ supabase-client.js
+│  ├─ auth.js
+│  ├─ deals.js
+│  ├─ referrals.js
+│  ├─ tracking.js
+│  ├─ cashback.js
+│  ├─ admin.js
+│  ├─ utils.js
+│  └─ site.js
+├─ assets/
+├─ CNAME
 ├─ supabase/
 │  ├─ config.toml
 │  ├─ migrations/
@@ -140,7 +140,6 @@ BunDeal/
 │  │  └─ admin-operation/
 │  ├─ seed.sql
 │  └─ tests/
-├─ partner/
 ├─ .env.example
 ├─ .gitignore
 ├─ README.md
@@ -652,7 +651,7 @@ Each network adapter maps approved CSV, API or webhook fields into this format. 
 
 ### Local
 
-- Static server for `site/`.
+- Static server for the repository root.
 - Local Supabase or dedicated cloud development project.
 - Simulation data only by default.
 

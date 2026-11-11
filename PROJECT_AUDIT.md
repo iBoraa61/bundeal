@@ -10,55 +10,41 @@ BunDeal is currently a static, bilingual frontend prototype. It contains no back
 
 The existing visual identity, responsive CSS, bilingual content, legal pages, navigation, calculation example and lightweight JavaScript can be reused. The prototype should be extended incrementally rather than rewritten in a frontend framework.
 
-Repository control is now established for Phase 0. The live GitHub repository is `iBoraa61/bundeal`, and the protected working branch is `feature/bundeal-backend`. The public `main` branch remains the current prototype. The original Desktop `BunDeal` working folder still contains partner collateral and nested `site/` assets that are not all present in the GitHub Pages root layout.
+Repository control is established. The live repository is `iBoraa61/bundeal`. Backend work stays on `feature/bundeal-backend`. `main` remains the published prototype. GitHub Pages serves the repository root, and `CNAME` maps it to `bundeal.de`.
+
+A separate Desktop folder, `C:\Users\IBora\Desktop\BunDeal`, contains partner presentations and a nested `site/` copy. That folder is not the deployment source. New application files belong in this repository root, not in a new `site/` directory.
 
 ## A. Current project structure
 
-Application source:
+Deployed repository `iBoraa61/bundeal`, branch `feature/bundeal-backend`:
 
 ```text
-BunDeal/
-├─ site/
-│  ├─ index.html                  German landing page
-│  ├─ index-en.html               English landing page
-│  ├─ beispiel-take3.html         German calculation example
-│  ├─ example-en.html             English calculation example
-│  ├─ impressum.html              German legal notice
-│  ├─ legal-notice-en.html        Informational English translation
-│  ├─ datenschutz.html            German privacy notice
-│  ├─ privacy-en.html             Informational English translation
-│  ├─ css/
-│  │  └─ styles.css               Shared responsive design system
-│  ├─ js/
-│  │  └─ site.js                  Navigation, link copying and email suggestion flow
-│  └─ assets/
-│     ├─ logo.svg                 Canonical BunDeal logo and claim
-│     ├─ logo-icon.png            Browser icon referenced by pages
-│     ├─ headphones.png           Example product image
-│     └─ fonts/
-│        ├─ nunito-700.woff2
-│        ├─ nunito-800.woff2
-│        ├─ source-sans-3-400.woff2
-│        ├─ source-sans-3-600.woff2
-│        └─ source-sans-3-700.woff2
-├─ partner/
-│  ├─ awin.html
-│  ├─ awin-stil.html
-│  ├─ impact-en.html
-│  ├─ partnerize-en.html
-│  ├─ logo-mark.svg
-│  ├─ update_referral_decks.py
-│  ├─ build_english_decks.py
-│  └─ _ref_*.html                 Generated presentation fragments
-├─ partner presentation PNG/PDF files
+bundeal/
+├─ index.html
+├─ index-en.html
+├─ beispiel-take3.html
+├─ example-en.html
+├─ impressum.html
+├─ legal-notice-en.html
+├─ datenschutz.html
+├─ privacy-en.html
+├─ css/styles.css
+├─ js/site.js
+├─ assets/
+│  ├─ logo.svg
+│  ├─ logo-icon.png
+│  ├─ headphones.png
+│  └─ fonts/
+├─ CNAME
+├─ README.md
 ├─ PROJECT_AUDIT.md
 ├─ ARCHITECTURE.md
 └─ IMPLEMENTATION_ROADMAP.md
 ```
 
-The partner presentation sources and generated files are business collateral, not runtime dependencies of the website. They should eventually be separated from deployable application files or clearly excluded from deployment.
+Partner PDFs, presentation HTML and Python generators exist only in the Desktop working folder. They are not part of the website repository and must not be uploaded to the GitHub Pages root.
 
-No `README.md`, package manifest, CI workflow, test configuration, Supabase directory, migration, environment template, Git metadata or deployment configuration is present locally.
+There is no package manifest, CI workflow, test suite, Supabase directory, migration or environment template. `README.md` currently contains only the title.
 
 ## B. Existing frontend functionality
 
@@ -84,16 +70,17 @@ No `README.md`, package manifest, CI workflow, test configuration, Supabase dire
 
 ### Hosting behavior
 
-- The site can be served as static files.
-- All application paths are relative and compatible with GitHub Pages when the contents of `site/` are deployed as the site root.
+- The site is already served as static files from the repository root.
+- Relative paths match the current GitHub Pages deployment.
+- `CNAME` contains `bundeal.de`.
 - There is no client-side router and no server-side routing requirement.
 
 ## C. Reusable components
 
-- `site/assets/logo.svg` is the canonical brand asset and must remain unchanged.
-- `site/css/styles.css` provides typography, colors, cards, buttons, grids, responsive rules, forms, deal presentation and legal-page styling.
+- `assets/logo.svg` is the canonical brand asset and must remain unchanged.
+- `css/styles.css` provides typography, colors, cards, buttons, grids, responsive rules, forms, deal presentation and legal-page styling.
 - Shared header, footer and navigation markup can be extracted only if a lightweight generation step becomes worthwhile; duplication is acceptable during the first backend phases.
-- `site/js/site.js` can remain the entry point for shared progressive enhancement.
+- `js/site.js` can remain the entry point for shared progressive enhancement.
 - The bilingual pages provide a reusable content and routing pattern.
 - The calculation example is useful as the first simulation-mode deal detail.
 - Existing notices about estimated and confirmed amounts should become shared status components.
@@ -103,7 +90,7 @@ No `README.md`, package manifest, CI workflow, test configuration, Supabase dire
 
 ### Platform foundation
 
-- Git-controlled local checkout connected to the deployed repository.
+- Git checkout of `feature/bundeal-backend` exists at `C:\Users\IBora\Desktop\bundeal-git`.
 - Development and production environment separation.
 - Supabase projects and configuration.
 - Database schema and migrations.
@@ -203,7 +190,7 @@ The runtime has no third-party JavaScript dependencies. Fonts and images are sel
 
 ## Deployment findings
 
-- The local application is nested under `site/`, while GitHub Pages commonly deploys from a repository root or `/docs`. The actual repository deployment source must be documented before Phase 1.
+- GitHub Pages deploys this repository root. Do not move the live pages into a `site/` folder.
 - The project uses `noindex, nofollow` on all current pages. This is appropriate for a prototype but must be an explicit launch decision later.
 - GitHub Pages cannot securely store secrets or execute server-side redirects.
 - Supabase Auth redirect URLs must include every approved local, preview and production origin.
