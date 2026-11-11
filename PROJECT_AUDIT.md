@@ -10,7 +10,7 @@ BunDeal is currently a static, bilingual frontend prototype. It contains no back
 
 The existing visual identity, responsive CSS, bilingual content, legal pages, navigation, calculation example and lightweight JavaScript can be reused. The prototype should be extended incrementally rather than rewritten in a frontend framework.
 
-The most important prerequisite for Phase 1 is repository control. The local `BunDeal` directory is not a Git checkout, and no BunDeal repository is visible in the currently authenticated GitHub account. No backend branch can safely be created until the actual GitHub repository URL or owner/name is known and the local project has been connected to it.
+Repository control is now established for Phase 0. The live GitHub repository is `iBoraa61/bundeal`, and the protected working branch is `feature/bundeal-backend`. The public `main` branch remains the current prototype. The original Desktop `BunDeal` working folder still contains partner collateral and nested `site/` assets that are not all present in the GitHub Pages root layout.
 
 ## A. Current project structure
 

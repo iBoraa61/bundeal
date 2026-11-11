@@ -38,9 +38,10 @@ Understand the current project and define a safe target before backend work.
 - Frontend and presentation sources audited.
 - Target architecture and schema proposed.
 - Security and deployment risks documented.
-- Local directory found not to be a Git repository.
-- BunDeal repository not found in the authenticated GitHub account.
-- Branch creation blocked until repository identity is supplied.
+- Live repository identified as `iBoraa61/bundeal`.
+- Branch `feature/bundeal-backend` created from `main`.
+- Phase 0 documents committed to the feature branch.
+- Desktop working folder and GitHub Pages root layout remain different and must be reconciled carefully in Phase 1.
 
 ### Approval gate
 
