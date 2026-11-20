@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Verwaltung – BunDeal</title>
+  <link rel="icon" href="assets/logo-icon.png" type="image/png">
+  <link rel="stylesheet" href="css/styles.css?v=15">
+</head>
+<body data-page="admin">
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <div class="proto">Verwaltung. Live-Links nur nach Freigabe des Advertisers verwenden.</div>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html"><img src="assets/logo.svg?v=4" alt="BunDeal, Gemeinsam mehr sparen."></a>
+      <div class="header-controls">
+        <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
+          <a href="index.html#ablauf">Ablauf</a>
+          <a href="beispiel-take3.html">Beispiel</a>
+          <a href="deals.html">Deals</a>
+          <a href="submit-deal.html">Vorschlag</a>
+          <a href="impressum.html">Impressum</a>
+        </nav>
+        <div class="account-slot" data-account-slot>
+          <a class="account-menu-button" href="login.html">Anmelden</a>
+        </div>
+        <a class="language-switch" href="admin.html?lang=en" data-language-switch lang="en">EN</a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menü</button>
+      </div>
+    </div>
+  </header>
+  <main id="inhalt">
+    <div class="wrap">
+      <h1>Verwaltung</h1>
+      <p class="status" data-admin-status role="status"></p>
+      <div class="admin-shell">
+        <nav class="admin-nav" aria-label="Verwaltungsbereiche">
+          <button type="button" data-admin-tab="merchants" aria-selected="true">Händler</button>
+          <button type="button" data-admin-tab="deals">Deals</button>
+          <button type="button" data-admin-tab="tracking">Tracking</button>
+          <button type="button" data-admin-tab="cashback">Cashback</button>
+          <button type="button" data-admin-tab="operations">Betrieb</button>
+          <button type="button" data-admin-tab="creators">Creator</button>
+        </nav>
+        <div>
+          <section class="admin-panel is-active" data-admin-panel="merchants">
+            <form class="suggestion-form" data-merchant-form>
+              <h2>Händler</h2>
+              <label>Name <input name="name" required></label>
+              <label>Slug <input name="slug" required></label>
+              <label>Website <input name="website" type="url" required></label>
+              <button class="button button-primary" type="submit">Händler speichern</button>
+            </form>
+          </section>
+          <section class="admin-panel" data-admin-panel="deals">
+            <form class="suggestion-form" data-deal-form>
+              <h2>Deal veröffentlichen</h2>
+              <label>Händler <select name="merchant_id" data-merchant-select required></select></label>
+              <label>Slug <input name="slug" required></label>
+              <label>Titel <input name="title" required></label>
+              <label>Beschreibung <textarea name="description" required minlength="10"></textarea></label>
+              <label>Preis in Cent <input name="price" inputmode="numeric" required></label>
+              <label>Bild-URL, optional <input name="image" type="url"></label>
+              <button class="button button-primary" type="submit">Veröffentlichen</button>
+            </form>
+            <div>
+              <h2>Offene Vorschläge</h2>
+              <div class="grid-2" data-submission-list></div>
+            </div>
+          </section>
+          <section class="admin-panel" data-admin-panel="tracking">
+            <form class="suggestion-form" data-link-form>
+              <h2>Tracking-Link</h2>
+              <p class="fine">Die Zieladresse bleibt serverseitig. Live nur nach Programmfreigabe.</p>
+              <label>Deal <select name="deal_id" data-deal-select required></select></label>
+              <label>Netzwerk <input name="network" value="webgains" required></label>
+              <label>Konto-Referenz <input name="account" value="dev" required></label>
+              <label>Umgebung
+                <select name="environment">
+                  <option value="simulation" selected>simulation</option>
+                  <option value="live">live</option>
+                </select>
+              </label>
+              <label>Affiliate-URL <input name="url" type="url" required></label>
+              <label>Parameter <input name="parameter" value="clickref" required></label>
+              <button class="button button-primary" type="submit">Link speichern</button>
+            </form>
+            <form class="suggestion-form" data-import-form>
+              <h2>Simulationsimport</h2>
+              <label>Ereignisse als JSON-Liste <textarea name="events" rows="6" required></textarea></label>
+              <button class="button button-secondary" type="submit">Simulation importieren</button>
+            </form>
+          </section>
+          <section class="admin-panel" data-admin-panel="cashback" data-cashback-admin>
+            <div>
+              <h2>Cashback</h2>
+              <p class="fine">Bestätigte Provision wird in Cent gebucht. Eine neue Regel gilt nur für spätere Käufe. Ohne Kampagne fallen die Creator-Punkte an BunDeal zurück, also 35/15/50. Die 15 % ohne Empfehler bleiben ein Gemeinschaftsanteil. Eine Auszahlung ist nicht freigeschaltet, und Live-Buchungen laufen nicht aus dem Browser.</p>
+            </div>
+            <dl class="card" data-cashback-current></dl>
+            <form class="suggestion-form" data-rule-form>
+              <h3>Neue Provisionsregel</h3>
+              <label>Version <input name="version" required pattern="[a-z0-9][a-z0-9._-]{0,40}"></label>
+              <label>Grund-Cashback, Basispunkte <input name="basic" inputmode="numeric" required></label>
+              <label>Empfehlungsbonus, Basispunkte <input name="referral" inputmode="numeric" required></label>
+              <label>Creator, Basispunkte <input name="creator" inputmode="numeric" value="0" required></label>
+              <label>BunDeal, Basispunkte <input name="platform" inputmode="numeric" required></label>
+              <button class="button button-primary" type="submit">Regel veröffentlichen</button>
+            </form>
+            <form class="suggestion-form" data-policy-form>
+              <h3>Freigabe nach Bestätigung</h3>
+              <label>Version <input name="version" required pattern="[a-z0-9][a-z0-9._-]{0,40}"></label>
+              <label>Tage bis verfügbar <input name="delay" inputmode="numeric" value="0" required></label>
+              <div class="button-row">
+                <button class="button button-primary" type="submit">Regelwerk speichern</button>
+                <button class="button button-secondary" type="button" data-release-due>Fällige Simulation freigeben</button>
+              </div>
+            </form>
+            <div class="grid-2" data-cashback-recent></div>
+          </section>
+          <section class="admin-panel" data-admin-panel="operations">
+            <nav class="admin-subnav" aria-label="Betriebsbereiche">
+              <button type="button" data-ops-tab="rounds" aria-selected="true">Runden</button>
+              <button type="button" data-ops-tab="transactions">Käufe</button>
+              <button type="button" data-ops-tab="events">Ereignisse</button>
+              <button type="button" data-ops-tab="risks">Risiken</button>
+              <button type="button" data-ops-tab="payouts">Vorbereitung</button>
+              <button type="button" data-ops-tab="audit">Protokoll</button>
+            </nav>
+            <div class="ops-panel is-active" data-ops-panel="rounds">
+              <h2>Offene Monatsrunden</h2>
+              <p class="fine">Eine geschlossene Runde nimmt keine neuen Käufe mehr an. Sie zahlt niemanden aus.</p>
+              <div class="grid-2" data-admin-rounds></div>
+            </div>
+            <div class="ops-panel" data-ops-panel="transactions">
+              <h2>Käufe</h2>
+              <div class="grid-2" data-admin-transactions></div>
+            </div>
+            <div class="ops-panel" data-ops-panel="events">
+              <h2>Affiliate-Ereignisse</h2>
+              <p class="fine">Ohne Rohdaten. Live-Importe laufen nicht aus dem Browser.</p>
+              <div class="grid-2" data-admin-events></div>
+            </div>
+            <div class="ops-panel" data-ops-panel="risks">
+              <h2>Risiken</h2>
+              <div class="grid-2" data-admin-risks></div>
+            </div>
+            <div class="ops-panel" data-ops-panel="payouts">
+              <h2>Auszahlungsvorbereitung</h2>
+              <p class="fine">Nur verfügbare Beträge aus geschlossenen Runden. Eine Auszahlung wird hier nicht ausgeführt und nicht gespeichert.</p>
+              <div class="grid-2" data-admin-payouts></div>
+            </div>
+            <div class="ops-panel" data-ops-panel="audit">
+              <h2>Prüfprotokoll</h2>
+              <div class="grid-2" data-admin-audit></div>
+            </div>
+          </section>
+          <section class="admin-panel" data-admin-panel="creators">
+            <div>
+              <h2>Creator-Anträge</h2>
+              <p class="fine">Ein Antrag macht noch keine Creator-Rolle. Erst die Bestätigung schaltet die Creator-Oberfläche frei.</p>
+              <div class="grid-2" data-creator-applications></div>
+            </div>
+            <form class="suggestion-form" data-creator-role-form>
+              <h2>Rolle direkt setzen</h2>
+              <p class="fine">Für ein bestehendes Konto, nach der Prüfung. Der Nutzername steht im Konto.</p>
+              <label>Nutzername <input name="username" required pattern="[a-z0-9_]{3,30}" spellcheck="false"></label>
+              <div class="button-row">
+                <button class="button button-primary" type="submit" name="enabled" value="true">Rolle geben</button>
+                <button class="button button-secondary" type="submit" name="enabled" value="false">Rolle entziehen</button>
+              </div>
+            </form>
+            <div>
+              <h2>Kampagnen</h2>
+              <div class="grid-2" data-creator-admin></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer"><div class="wrap"><strong>BunDeal</strong><p>Gemeinsam mehr sparen.</p></div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/admin.js?v=6"></script>
+  <script src="js/account-menu.js"></script>
+  <script src="js/site.js"></script>
+</body>
+</html>

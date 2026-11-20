@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Deal – BunDeal</title>
+  <link rel="icon" href="assets/logo-icon.png" type="image/png">
+  <link rel="stylesheet" href="css/styles.css?v=14">
+</head>
+<body data-page="deal">
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <div class="proto" data-i18n="proto">Prototyp. Ein Kauf ist über BunDeal noch nicht als Auszahlung möglich.</div>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html"><img src="assets/logo.svg?v=4" alt="BunDeal, Gemeinsam mehr sparen."></a>
+      <div class="header-controls">
+        <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
+          <a href="index.html#ablauf">Ablauf</a>
+          <a href="beispiel-take3.html">Beispiel</a>
+          <a href="deals.html" aria-current="page">Deals</a>
+          <a href="submit-deal.html">Vorschlag</a>
+          <a href="impressum.html">Impressum</a>
+        </nav>
+        <div class="account-slot" data-account-slot>
+          <a class="account-menu-button" href="login.html">Anmelden</a>
+        </div>
+        <a class="language-switch" href="deal.html?lang=en" data-language-switch lang="en">EN</a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menü</button>
+      </div>
+    </div>
+  </header>
+  <main id="inhalt">
+    <div class="wrap deal-layout">
+      <img data-deal-image alt="" hidden>
+      <div>
+        <p class="eyebrow" data-deal-merchant></p>
+        <h1 data-deal-title>Deal</h1>
+        <p class="fine" data-i18n="priceLabel">Du zahlst beim Händler</p>
+        <p class="amount" data-deal-price></p>
+        <p data-deal-description></p>
+        <p class="fine" data-deal-estimate data-i18n="estimateNote">Cashback entsteht erst aus bestätigter Provision. Ein angezeigter Schätzwert ist kein Versprechen.</p>
+        <div class="actions">
+          <button class="button button-primary" type="button" data-merchant-click data-i18n="buy">Zum Händler</button>
+        </div>
+        <div class="notice" data-referral-box></div>
+        <p class="status" data-deal-status role="status"></p>
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer"><div class="wrap"><strong>BunDeal</strong><p>Gemeinsam mehr sparen.</p></div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/deals.js?v=3"></script>
+  <script src="js/tracking.js"></script>
+  <script src="js/referrals.js"></script>
+  <script src="js/account-menu.js"></script>
+  <script src="js/site.js"></script>
+</body>
+</html>

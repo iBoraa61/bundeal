@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Konto anlegen – BunDeal</title>
+  <meta name="description" content="Ein BunDeal-Konto anlegen.">
+  <link rel="icon" href="assets/logo-icon.png" type="image/png">
+  <link rel="stylesheet" href="css/styles.css?v=14">
+</head>
+<body data-auth-page="register">
+  <a class="skip" href="#inhalt" data-i18n="skip">Zum Inhalt</a>
+  <div class="proto" data-i18n="proto">Prototyp. Die Angebote sind Beispiele. Ein Kauf ist über BunDeal noch nicht möglich.</div>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html" data-href-de="index.html" data-href-en="index-en.html">
+        <img src="assets/logo.svg?v=4" alt="BunDeal, Gemeinsam mehr sparen.">
+      </a>
+      <div class="header-controls">
+        <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
+          <a href="index.html#ablauf">Ablauf</a>
+          <a href="beispiel-take3.html">Beispiel</a>
+          <a href="deals.html">Deals</a>
+          <a href="submit-deal.html">Vorschlag</a>
+          <a href="impressum.html">Impressum</a>
+        </nav>
+        <div class="account-slot" data-account-slot>
+          <a class="account-menu-button" href="login.html">Anmelden</a>
+        </div>
+        <a class="language-switch" href="register.html?lang=en" data-language-switch lang="en">EN</a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menü</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="inhalt">
+    <div class="wrap auth-card">
+      <p class="notice" data-dev-notice data-i18n="devNotice" hidden>Entwicklungsumgebung. Es werden keine echten Auszahlungen ausgeführt.</p>
+      <p class="eyebrow" data-i18n="registerEyebrow">Konto</p>
+      <h1 data-i18n="registerTitle">Konto anlegen</h1>
+      <p class="lead" data-i18n="registerLead">Der Empfehlungscode entsteht auf dem Server. Eine Rolle kannst du hier nicht wählen.</p>
+      <form class="suggestion-form" data-auth-form="register">
+        <label><span data-i18n="email">E-Mail</span>
+          <input type="email" name="email" autocomplete="email" required>
+        </label>
+        <label><span data-i18n="username">Nutzername</span>
+          <input type="text" name="username" autocomplete="nickname" maxlength="30" spellcheck="false">
+        </label>
+        <p class="section-intro" data-i18n="usernameHint">Optional. 3 bis 30 Zeichen: Kleinbuchstaben, Zahlen und Unterstrich.</p>
+        <label><span data-i18n="displayName">Anzeigename</span>
+          <input type="text" name="displayName" autocomplete="nickname" maxlength="80">
+        </label>
+        <label><span data-i18n="password">Passwort</span>
+          <input type="password" name="password" autocomplete="new-password" minlength="8" required>
+        </label>
+        <label><span data-i18n="passwordAgain">Passwort wiederholen</span>
+          <input type="password" name="password2" autocomplete="new-password" minlength="8" required>
+        </label>
+        <label class="check-row">
+          <input type="checkbox" name="creatorRequest">
+          <span data-i18n="creatorApply">Ich möchte als Creator geprüft werden</span>
+        </label>
+        <label data-creator-channel hidden>
+          <span data-i18n="creatorChannel">Kanal</span>
+          <textarea name="channel" minlength="8" maxlength="160"></textarea>
+        </label>
+        <p class="fine" data-i18n="creatorHint">Zum Beispiel ein Kanalname. Die Rolle gilt erst nach Prüfung in der Verwaltung. Eine E-Mail gehört hier nicht hin.</p>
+        <button class="button button-primary" type="submit" data-i18n="registerSubmit">Konto anlegen</button>
+        <p class="status" data-auth-status role="status"></p>
+      </form>
+      <div class="auth-links">
+        <a href="login.html" data-i18n="goLogin" data-href-de="login.html" data-href-en="login.html?lang=en">Zur Anmeldung</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <strong>BunDeal</strong>
+        <p>Gemeinsam mehr sparen.</p>
+      </div>
+      <nav aria-label="Fußnavigation">
+        <a href="beispiel-take3.html" data-i18n="footerExample" data-href-de="beispiel-take3.html" data-href-en="example-en.html">Beispiel-Deal</a>
+        <a href="impressum.html" data-i18n="footerLegal" data-href-de="impressum.html" data-href-en="legal-notice-en.html">Impressum</a>
+        <a href="datenschutz.html" data-i18n="footerPrivacy" data-href-de="datenschutz.html" data-href-en="privacy-en.html">Datenschutz</a>
+      </nav>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/account-menu.js"></script>
+  <script src="js/site.js"></script>
+</body>
+</html>

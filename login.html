@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Anmelden – BunDeal</title>
+  <meta name="description" content="Bei BunDeal anmelden.">
+  <link rel="icon" href="assets/logo-icon.png" type="image/png">
+  <link rel="stylesheet" href="css/styles.css?v=14">
+</head>
+<body data-auth-page="login">
+  <a class="skip" href="#inhalt" data-i18n="skip">Zum Inhalt</a>
+  <div class="proto" data-i18n="proto">Prototyp. Die Angebote sind Beispiele. Ein Kauf ist über BunDeal noch nicht möglich.</div>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html" data-href-de="index.html" data-href-en="index-en.html">
+        <img src="assets/logo.svg?v=4" alt="BunDeal, Gemeinsam mehr sparen.">
+      </a>
+      <div class="header-controls">
+        <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
+          <a href="index.html#ablauf">Ablauf</a>
+          <a href="beispiel-take3.html">Beispiel</a>
+          <a href="deals.html">Deals</a>
+          <a href="submit-deal.html">Vorschlag</a>
+          <a href="impressum.html">Impressum</a>
+        </nav>
+        <div class="account-slot" data-account-slot>
+          <a class="account-menu-button" href="login.html">Anmelden</a>
+        </div>
+        <a class="language-switch" href="login.html?lang=en" data-language-switch lang="en">EN</a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menü</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="inhalt">
+    <div class="wrap auth-card">
+      <p class="notice" data-dev-notice data-i18n="devNotice" hidden>Entwicklungsumgebung. Es werden keine echten Auszahlungen ausgeführt.</p>
+      <p class="eyebrow" data-i18n="loginEyebrow">Konto</p>
+      <h1 data-i18n="loginTitle">Anmelden</h1>
+      <p class="lead" data-i18n="loginLead">Melde dich an, bevor du später einen Händler-Link öffnest. Cashback wird hier noch nicht berechnet.</p>
+      <form class="suggestion-form" data-auth-form="login">
+        <label><span data-i18n="email">E-Mail</span>
+          <input type="email" name="email" autocomplete="username" required>
+        </label>
+        <label><span data-i18n="password">Passwort</span>
+          <input type="password" name="password" autocomplete="current-password" minlength="8" required>
+        </label>
+        <button class="button button-primary" type="submit" data-i18n="loginSubmit">Anmelden</button>
+        <p class="status" data-auth-status role="status"></p>
+      </form>
+      <div class="auth-links">
+        <a href="register.html" data-i18n="goRegister" data-href-de="register.html" data-href-en="register.html?lang=en">Konto anlegen</a>
+        <a href="reset-password.html" data-i18n="goReset" data-href-de="reset-password.html" data-href-en="reset-password.html?lang=en">Passwort vergessen</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <strong>BunDeal</strong>
+        <p>Gemeinsam mehr sparen.</p>
+      </div>
+      <nav aria-label="Fußnavigation">
+        <a href="beispiel-take3.html" data-i18n="footerExample" data-href-de="beispiel-take3.html" data-href-en="example-en.html">Beispiel-Deal</a>
+        <a href="impressum.html" data-i18n="footerLegal" data-href-de="impressum.html" data-href-en="legal-notice-en.html">Impressum</a>
+        <a href="datenschutz.html" data-i18n="footerPrivacy" data-href-de="datenschutz.html" data-href-en="privacy-en.html">Datenschutz</a>
+      </nav>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/account-menu.js"></script>
+  <script src="js/site.js"></script>
+</body>
+</html>
