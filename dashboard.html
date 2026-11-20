@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Dein Konto – BunDeal</title>
+  <meta name="description" content="Das eigene BunDeal-Konto.">
+  <link rel="icon" href="assets/logo-icon.png" type="image/png">
+  <link rel="stylesheet" href="css/styles.css?v=14">
+</head>
+<body data-auth-page="dashboard">
+  <a class="skip" href="#inhalt" data-i18n="skip">Zum Inhalt</a>
+  <div class="proto" data-i18n="proto">Prototyp. Die Angebote sind Beispiele. Ein Kauf ist über BunDeal noch nicht möglich.</div>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html" data-href-de="index.html" data-href-en="index-en.html">
+        <img src="assets/logo.svg?v=4" alt="BunDeal, Gemeinsam mehr sparen.">
+      </a>
+      <div class="header-controls">
+        <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
+          <a href="index.html#ablauf">Ablauf</a>
+          <a href="beispiel-take3.html">Beispiel</a>
+          <a href="deals.html">Deals</a>
+          <a href="submit-deal.html">Vorschlag</a>
+          <a href="impressum.html">Impressum</a>
+        </nav>
+        <div class="account-slot" data-account-slot>
+          <a class="account-menu-button" href="login.html">Anmelden</a>
+        </div>
+        <a class="language-switch" href="dashboard.html?lang=en" data-language-switch lang="en">EN</a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menü</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="inhalt">
+    <div class="wrap auth-card dashboard-card" data-dashboard>
+      <p class="notice" data-dev-notice data-i18n="devNotice" hidden>Entwicklungsumgebung. Es werden keine echten Auszahlungen ausgeführt.</p>
+      <p class="eyebrow" data-i18n="dashboardEyebrow">Konto</p>
+      <h1 data-i18n="dashboardTitle">Dein Konto</h1>
+      <p class="lead" data-i18n="dashboardLead">Dein Cashback, deine Empfehlungen und deine Vorschläge. Eine Auszahlung gibt es hier noch nicht. Ein Betrag auf der Dealseite ist eine Schätzung und kein Guthaben.</p>
+      <p class="status" data-auth-status role="status"></p>
+      <div class="admin-shell">
+        <nav class="admin-nav" aria-label="Kontobereiche">
+          <button type="button" data-dash-tab="overview" aria-selected="true">Übersicht</button>
+          <button type="button" data-dash-tab="purchases">Käufe</button>
+          <button type="button" data-dash-tab="referrals">Empfehlungen</button>
+          <button type="button" data-dash-tab="submissions">Vorschläge</button>
+          <button type="button" data-dash-tab="account">Konto</button>
+          <button type="button" data-dash-tab="creator" hidden>Creator</button>
+        </nav>
+        <div>
+          <section class="admin-panel is-active" data-dash-panel="overview">
+            <div>
+              <h2>Cashback</h2>
+              <p class="fine">Simulation und Live sind getrennt. Ausstehend wartet auf die Freigabefrist. Verfügbar ist noch keine Auszahlung. Eine Schätzung ist kein Kontostand.</p>
+            </div>
+            <div class="grid-2" data-cashback-balances></div>
+          </section>
+          <section class="admin-panel" data-dash-panel="purchases">
+            <h2>Käufe</h2>
+            <div class="grid-2" data-purchase-history></div>
+          </section>
+          <section class="admin-panel" data-dash-panel="referrals">
+            <h2>Empfehlungen</h2>
+            <p data-referral-count>Aktive Empfehlungen: 0</p>
+            <p class="fine">Hier stehen nur deine eigenen Boni. Namen anderer Konten stehen hier nicht.</p>
+            <div class="grid-2" data-referral-history></div>
+          </section>
+          <section class="admin-panel" data-dash-panel="submissions">
+            <h2>Vorschläge</h2>
+            <div class="grid-2" data-dashboard-submissions></div>
+          </section>
+          <section class="admin-panel" data-dash-panel="account">
+            <div class="account-grid">
+              <p><span data-i18n="emailLabel">E-Mail</span><br><strong data-account-email></strong></p>
+              <p><span data-i18n="roleLabel">Rolle</span><br><strong data-account-role></strong></p>
+              <label><span data-i18n="referralLabel">Empfehlungscode</span>
+                <input data-referral-code readonly spellcheck="false">
+              </label>
+              <p class="section-intro" data-i18n="referralHint">Der Code bleibt fest und wird auf dem Server erzeugt.</p>
+              <button class="button button-secondary" type="button" data-copy-code data-i18n="copyCode">Code kopieren</button>
+            </div>
+            <form class="suggestion-form" data-auth-form="profile">
+              <label><span data-i18n="username">Nutzername</span>
+                <input type="text" name="username" maxlength="30" spellcheck="false" autocomplete="nickname">
+              </label>
+              <label><span data-i18n="displayName">Anzeigename</span>
+                <input type="text" name="displayName" maxlength="80" autocomplete="nickname">
+              </label>
+              <button class="button button-primary" type="submit" data-save-profile data-i18n="saveProfile">Angaben speichern</button>
+            </form>
+            <div data-creator-apply></div>
+            <div class="auth-links">
+              <button class="button button-secondary" type="button" data-logout data-i18n="logout">Abmelden</button>
+            </div>
+          </section>
+          <section class="admin-panel" data-dash-panel="creator">
+            <div data-creator-campaigns></div>
+            <div>
+              <h2>Creator-Beteiligung</h2>
+              <div class="grid-2" data-creator-history></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <strong>BunDeal</strong>
+        <p>Gemeinsam mehr sparen.</p>
+      </div>
+      <nav aria-label="Fußnavigation">
+        <a href="beispiel-take3.html" data-i18n="footerExample" data-href-de="beispiel-take3.html" data-href-en="example-en.html">Beispiel-Deal</a>
+        <a href="impressum.html" data-i18n="footerLegal" data-href-de="impressum.html" data-href-en="legal-notice-en.html">Impressum</a>
+        <a href="datenschutz.html" data-i18n="footerPrivacy" data-href-de="datenschutz.html" data-href-en="privacy-en.html">Datenschutz</a>
+      </nav>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cashback.js?v=2"></script>
+  <script src="js/creator.js?v=3"></script>
+  <script src="js/account-menu.js"></script>
+  <script src="js/site.js"></script>
+</body>
+</html>

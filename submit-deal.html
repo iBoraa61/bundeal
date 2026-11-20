@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Deal vorschlagen – BunDeal</title>
+  <link rel="icon" href="assets/logo-icon.png" type="image/png">
+  <link rel="stylesheet" href="css/styles.css?v=14">
+</head>
+<body data-page="submit">
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <div class="proto" data-i18n="proto">Prototyp. Ein Kauf ist über BunDeal noch nicht als Auszahlung möglich.</div>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html"><img src="assets/logo.svg?v=4" alt="BunDeal, Gemeinsam mehr sparen."></a>
+      <div class="header-controls">
+        <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
+          <a href="index.html#ablauf">Ablauf</a>
+          <a href="beispiel-take3.html">Beispiel</a>
+          <a href="deals.html">Deals</a>
+          <a href="submit-deal.html" aria-current="page">Vorschlag</a>
+          <a href="impressum.html">Impressum</a>
+        </nav>
+        <div class="account-slot" data-account-slot>
+          <a class="account-menu-button" href="login.html">Anmelden</a>
+        </div>
+        <a class="language-switch" href="submit-deal.html?lang=en" data-language-switch lang="en">EN</a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menü</button>
+      </div>
+    </div>
+  </header>
+  <main id="inhalt">
+    <div class="wrap auth-card">
+      <h1 data-i18n="suggest">Deal vorschlagen</h1>
+      <p class="lead" data-i18n="submitLead">BunDeal prüft den Vorschlag. Er wird nicht automatisch veröffentlicht.</p>
+      <form class="suggestion-form" data-suggestion-form>
+        <label><span data-i18n="fieldTitle">Titel</span> <input name="title" required maxlength="140"></label>
+        <label><span data-i18n="fieldDescription">Beschreibung</span> <textarea name="description" required minlength="10" rows="4"></textarea></label>
+        <label><span data-i18n="fieldUrl">https-Link</span> <input name="url" type="url" required></label>
+        <label><span data-i18n="fieldPrice">Preis in Cent, optional</span> <input name="price" inputmode="numeric"></label>
+        <button class="button button-primary" type="submit" data-i18n="submitButton">Vorschlag speichern</button>
+      </form>
+      <div data-own-submissions></div>
+      <p class="status" data-deal-status role="status"></p>
+    </div>
+  </main>
+  <footer class="site-footer"><div class="wrap"><strong>BunDeal</strong><p>Gemeinsam mehr sparen.</p></div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/deals.js?v=3"></script>
+  <script src="js/account-menu.js"></script>
+  <script src="js/site.js"></script>
+</body>
+</html>

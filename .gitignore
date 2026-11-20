@@ -1,0 +1,8 @@
+.env
+.env.*
+!.env.example
+js/config.js
+
+supabase/.branches
+supabase/.temp
+supabase/.env

@@ -7,7 +7,7 @@
   <title>Beispiel: Kopfhörer – BunDeal</title>
   <meta name="description" content="BunDeal-Rechenbeispiel mit Grund-Cashback, direktem Empfehlungsbonus und Abrechnung in Monatsrunden.">
   <link rel="icon" href="assets/logo-icon.png" type="image/png">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=14">
 </head>
 <body>
   <a class="skip" href="#inhalt">Zum Inhalt</a>
@@ -21,9 +21,14 @@
         <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
           <a href="index.html#ablauf">Ablauf</a>
           <a href="beispiel-take3.html" aria-current="page">Beispiel</a>
+          <a href="deals.html">Deals</a>
+          <a href="submit-deal.html">Vorschlag</a>
           <a href="impressum.html">Impressum</a>
         </nav>
-        <a class="language-switch" href="example-en.html" lang="en" hreflang="en" aria-label="Switch to English">EN</a>
+        <div class="account-slot" data-account-slot>
+          <a class="account-menu-button" href="login.html">Anmelden</a>
+        </div>
+        <a class="language-switch" href="example-en.html" data-language-switch lang="en">EN</a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menü</button>
       </div>
     </div>
@@ -131,6 +136,10 @@
       </nav>
     </div>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="js/config.js" defer></script>
+  <script src="js/supabase-client.js" defer></script>
+  <script src="js/account-menu.js" defer></script>
   <script src="js/site.js" defer></script>
 </body>
 </html>
