@@ -15,16 +15,14 @@
     };
   var items = lang === "en"
     ? [
-      { key: "home", href: "index-en.html#process", label: "Process" },
-      { key: "example", href: "example-en.html", label: "Example" },
-      { key: "deals", href: "deals.html?lang=en", label: "Deals" },
+      { key: "deals", href: "index-en.html", label: "Deals" },
+      { key: "about", href: "about-en.html", label: "What is BunDeal" },
       { key: "suggest", href: "submit-deal.html?lang=en", label: "Suggest" },
       { key: "legal", href: "legal-notice-en.html", label: "Legal notice" }
     ]
     : [
-      { key: "home", href: "index.html#ablauf", label: "Ablauf" },
-      { key: "example", href: "beispiel-take3.html", label: "Beispiel" },
-      { key: "deals", href: "deals.html", label: "Deals" },
+      { key: "deals", href: "index.html", label: "Deals" },
+      { key: "about", href: "was-ist-bundeal.html", label: "Was ist BunDeal" },
       { key: "suggest", href: "submit-deal.html", label: "Vorschlag" },
       { key: "legal", href: "impressum.html", label: "Impressum" }
     ];
@@ -39,9 +37,8 @@
 
   function currentKey() {
     var file = fileName();
-    if (file === "index.html" || file === "index-en.html") return "home";
-    if (file === "beispiel-take3.html" || file === "example-en.html") return "example";
-    if (file === "deals.html" || file === "deal.html") return "deals";
+    if (file === "index.html" || file === "index-en.html" || file === "deals.html" || file === "deal.html") return "deals";
+    if (file === "was-ist-bundeal.html" || file === "about-en.html" || file === "beispiel-take3.html" || file === "example-en.html") return "about";
     if (file === "submit-deal.html") return "suggest";
     if (file === "impressum.html" || file === "legal-notice-en.html") return "legal";
     return "";
@@ -57,6 +54,8 @@
     var twins = {
       "index.html": "index-en.html",
       "index-en.html": "index.html",
+      "was-ist-bundeal.html": "about-en.html",
+      "about-en.html": "was-ist-bundeal.html",
       "beispiel-take3.html": "example-en.html",
       "example-en.html": "beispiel-take3.html",
       "impressum.html": "legal-notice-en.html",

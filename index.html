@@ -4,176 +4,63 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>BunDeal – Gemeinsam mehr sparen</title>
-  <meta name="description" content="BunDeal verbindet Affiliate-Deals mit Grund-Cashback und einem direkten Empfehlungsbonus. Ausgezahlt wird nur aus bestätigter Provision.">
+  <title>BunDeal – Angebote</title>
+  <meta name="description" content="BunDeal zeigt Angebote mit Cashback, Empfehlung oder Creator-Kampagne.">
   <link rel="icon" href="assets/logo-icon.png" type="image/png">
-  <link rel="stylesheet" href="css/styles.css?v=14">
+  <link rel="stylesheet" href="css/styles.css?v=16">
 </head>
-<body>
+<body data-page="deals">
   <a class="skip" href="#inhalt">Zum Inhalt</a>
-  <div class="proto">Prototyp. Die Angebote sind Beispiele. Ein Kauf ist über BunDeal noch nicht möglich.</div>
   <header class="site-header">
     <div class="wrap header-inner">
-      <a class="brand" href="index.html">
-        <img src="assets/logo.svg?v=4" alt="BunDeal, Gemeinsam mehr sparen.">
-      </a>
+      <a class="brand" href="index.html"><img src="assets/logo.svg?v=4" alt="BunDeal, Gemeinsam mehr sparen."></a>
       <div class="header-controls">
         <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
-          <a href="index.html#ablauf" aria-current="page">Ablauf</a>
-          <a href="beispiel-take3.html">Beispiel</a>
-          <a href="deals.html">Deals</a>
+          <a href="index.html" aria-current="page">Deals</a>
+          <a href="was-ist-bundeal.html">Was ist BunDeal</a>
           <a href="submit-deal.html">Vorschlag</a>
           <a href="impressum.html">Impressum</a>
         </nav>
         <div class="account-slot" data-account-slot>
           <a class="account-menu-button" href="login.html">Anmelden</a>
         </div>
-        <a class="language-switch" href="index-en.html" data-language-switch lang="en">EN</a>
+        <a class="language-switch" href="index-en.html" lang="en">EN</a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menü</button>
       </div>
     </div>
   </header>
-
   <main id="inhalt">
-    <div class="wrap hero">
-      <div>
-        <p class="eyebrow">Cashback plus direkter Empfehlungsbonus</p>
-        <h1>Gemeinsam mehr sparen.</h1>
-        <p class="lead">BunDeal zeigt geprüfte Angebote und führt dich nach dem Login über einen Affiliate-Link zum Händler. Aus bestätigter Provision erhältst du Grund-Cashback. Bringst du über deinen persönlichen BunDeal-Link einen direkten Käufer, kann zusätzlich ein Empfehlungsbonus entstehen.</p>
-        <div class="actions">
-          <a class="button button-primary" href="beispiel-take3.html">Beispiel-Deal ansehen</a>
-          <a class="button button-secondary" href="#ablauf">So läuft ein Deal</a>
+    <section class="market-hero">
+      <div class="wrap">
+        <p class="eyebrow">Live-Angebote</p>
+        <h1 data-i18n="listTitle">Angebote</h1>
+        <p class="lead" data-i18n="listLead">Der Händlerpreis ist der Preis im Shop. Cashback ist eine spätere Zahlung von BunDeal aus bestätigter Provision.</p>
+        <div class="offer-legend">
+          <article>
+            <span class="offer-pill is-cashback">Cashback</span>
+            <h2>Nur der Käufer</h2>
+            <p>Cashback aus bestätigter Provision. Kein persönlicher Empfehlungslink.</p>
+          </article>
+          <article>
+            <span class="offer-pill is-referral">Empfehlung</span>
+            <h2>Käufer und direkter Empfehler</h2>
+            <p>Nach dem eigenen Kauf kann ein persönlicher Link geteilt werden.</p>
+          </article>
+          <article>
+            <span class="offer-pill is-creator">Creator</span>
+            <h2>Dazu eine Kampagne</h2>
+            <p>Nur für ein freigegebenes Creator-Konto, zusätzlich zu Cashback und Empfehlung.</p>
+          </article>
         </div>
       </div>
-      <a class="preview" href="beispiel-take3.html">
-        <div class="preview-top">
-          <span class="pill">Beispiel · Monatsrunde</span>
-          <span class="timer-chip">Runde November</span>
-        </div>
-        <div class="price-card">
-          <span>Händlerpreis</span>
-          <strong>100 €</strong>
-          <p>Das zahlst du im Shop. Der Bonus ist eine mögliche spätere Zahlung von BunDeal.</p>
-        </div>
-        <ul class="tier-list">
-          <li><span>Grund-Cashback</span><b>3,50 €</b></li>
-          <li><span>je direkter Empfehlung</span><b>1,50 €</b></li>
-          <li><span>3 bestätigte Empfehlungen</span><b>+ 4,50 €</b></li>
-          <li><span>Beispiel gesamt</span><b>8,00 €</b></li>
-        </ul>
-      </a>
-    </div>
-
+    </section>
     <section>
       <div class="wrap">
-        <div class="grid-3">
-          <article class="card">
-            <h3>Kauf beim Händler</h3>
-            <p>BunDeal hat keinen eigenen Shop, keinen Warenkorb und keine Lieferung. Bestellung, Zahlung und Retoure bleiben beim Händler.</p>
-          </article>
-          <article class="card">
-            <h3>Persönlich und direkt empfehlen</h3>
-            <p>Nach einem zugeordneten Kauf erhältst du im BunDeal-Konto einen persönlichen Link. Nur unmittelbar darüber vermittelte, bestätigte Käufe können deinen Empfehlungsbonus erhöhen.</p>
-          </article>
-          <article class="card">
-            <h3>Nur bestätigte Provision zählt</h3>
-            <p>Vorgemerkte Käufe sind noch kein Cashback. Erst nach Bestätigung durch das Affiliate-Netzwerk werden Grund-Cashback und Empfehlungsbonus freigegeben.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="ablauf">
-      <div class="wrap">
-        <h2>So läuft ein Deal</h2>
-        <p class="section-intro">Deals bleiben online, solange Angebot und Affiliate-Link aktuell sind. Für eine klare Abrechnung wird jeder Kauf einer Monatsrunde zugeordnet.</p>
-        <div class="grid-4">
-          <article class="step">
-            <div class="num n1">1</div>
-            <h3>Deal öffnen</h3>
-            <p>Du siehst Händlerpreis, aktuelle Monatsrunde und die beispielhafte Aufteilung der bestätigten Provision.</p>
-          </article>
-          <article class="step">
-            <div class="num n2">2</div>
-            <h3>Einloggen und kaufen</h3>
-            <p>Der Login vor dem Händler-Klick verbindet deinen BunDeal-Klick später mit der gemeldeten Transaktion.</p>
-          </article>
-          <article class="step">
-            <div class="num n3">3</div>
-            <h3>Direkten Link teilen</h3>
-            <p>Nach deinem zugeordneten Kauf kannst du deinen persönlichen Deal-Link teilen. Es gibt keine mehrstufigen Empfehlungen.</p>
-          </article>
-          <article class="step">
-            <div class="num n4">4</div>
-            <h3>Bestätigung abwarten</h3>
-            <p>Cashback wird erst aus tatsächlich bestätigter Provision berechnet. Retouren und Ablehnungen erzeugen keine Auszahlung.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="bonus">
-      <div class="wrap panel">
-        <h2>Einfaches Modell statt Stufen</h2>
-        <p class="section-intro">Der Bonus ist kein Händlerrabatt. Er ist eine mögliche spätere Zahlung von BunDeal aus tatsächlich bestätigter Affiliate-Provision.</p>
-        <div class="grid-2">
-          <article class="card">
-            <h3>Grund-Cashback für den Käufer</h3>
-            <p>Im Rechenbeispiel gehen 35 % der bestätigten Provision als Grund-Cashback an den Käufer. Die konkrete Höhe hängt von der tatsächlich bestätigten Provision ab.</p>
-          </article>
-          <article class="card">
-            <h3>Bonus für direkte Empfehlungen</h3>
-            <p>Im Beispiel gehen weitere 15 % an den direkten Empfehler. Ohne direkte Zuordnung gibt es keinen Empfehlungsbonus. Empfehlungen von Empfehlungen werden nicht vergütet.</p>
-          </article>
-        </div>
-        <div class="actions">
-          <a class="button button-primary" href="beispiel-take3.html">Zum Rechenbeispiel</a>
-        </div>
-      </div>
-    </section>
-
-    <section id="community">
-      <div class="wrap">
-        <h2>Community – bewusst klein starten</h2>
-        <p class="section-intro">BunDeal legt Deals zunächst selbst an und prüft Händler, Preis, Affiliate-Regeln und Link. Nutzer können passende Angebote vorschlagen; veröffentlicht wird erst nach Prüfung.</p>
-        <div class="grid-3">
-          <article class="card">
-            <h3>Persönliche Statistik</h3>
-            <p>Im späteren Konto siehst du vorgemerkte und bestätigte Käufe, Grund-Cashback sowie deine direkten bestätigten Empfehlungen.</p>
-          </article>
-          <article class="card">
-            <h3>Freiwillige Badges</h3>
-            <p>Badges können gute Deal-Hinweise und hilfreiches Teilen sichtbar machen. Öffentliche Finanzdaten oder Klarnamen sind dafür nicht nötig.</p>
-          </article>
-          <article class="card">
-            <h3>Ranglisten erst später</h3>
-            <p>Falls Ranglisten kommen, dann freiwillig und möglichst anonymisiert. Im MVP stehen korrekte Zuordnung und Abrechnung im Vordergrund.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="vorschlag">
-      <div class="wrap panel">
-        <h2>Deal zur Prüfung vorschlagen</h2>
-        <p class="section-intro">Das Formular öffnet eine vorbereitete E-Mail an BunDeal. Der Vorschlag wird nicht automatisch veröffentlicht.</p>
-        <form class="suggestion-form" data-deal-suggestion>
-          <label>Link zum Angebot
-            <input type="url" name="url" required placeholder="https://…">
-          </label>
-          <label>Warum ist es ein guter Deal?
-            <textarea name="reason" rows="4" required placeholder="Preis, Produkt und Besonderheit kurz beschreiben"></textarea>
-          </label>
-          <label>E-Mail für Rückfragen
-            <input type="email" name="email" placeholder="optional">
-          </label>
-          <button class="button button-primary" type="submit">Vorschlag per E-Mail senden</button>
-          <p class="status" data-suggestion-status role="status"></p>
-        </form>
+        <div class="deal-grid" data-deal-list></div>
+        <p class="status" data-deal-status role="status"></p>
       </div>
     </section>
   </main>
-
   <footer class="site-footer">
     <div class="wrap footer-grid">
       <div>
@@ -181,16 +68,18 @@
         <p>Gemeinsam mehr sparen.</p>
       </div>
       <nav aria-label="Fußnavigation">
-        <a href="beispiel-take3.html">Beispiel-Deal</a>
+        <a href="was-ist-bundeal.html">Was ist BunDeal</a>
         <a href="impressum.html">Impressum</a>
         <a href="datenschutz.html">Datenschutz</a>
       </nav>
     </div>
   </footer>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="js/config.js" defer></script>
-  <script src="js/supabase-client.js" defer></script>
-  <script src="js/account-menu.js" defer></script>
-  <script src="js/site.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/deals.js?v=6"></script>
+  <script src="js/account-menu.js?v=2"></script>
+  <script src="js/site.js"></script>
 </body>
 </html>

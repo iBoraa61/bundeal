@@ -2,13 +2,21 @@
 (function () {
   var utils = window.bundealUtils || {};
   var params = new URLSearchParams(window.location.search);
-  var lang = params.get("lang") === "en" ? "en" : "de";
+  var lang = params.get("lang") === "en" || document.documentElement.lang === "en" ? "en" : "de";
   var page = document.body.getAttribute("data-page");
   var copy = {
     de: {
       proto: "Prototyp. Ein Kauf ist über BunDeal noch nicht als Auszahlung möglich.",
-      listTitle: "Freigeschaltete Angebote",
+      listTitle: "Angebote",
       listLead: "Der Händlerpreis ist der Preis im Shop. Cashback ist eine spätere Zahlung von BunDeal aus bestätigter Provision.",
+      emptyTitle: "Die ersten Angebote folgen.",
+      emptyBody: "Jedes Angebot zeigt, was dazu gehört: nur Cashback, Cashback mit Empfehlung, oder zusätzlich eine Creator-Kampagne.",
+      modeCashback: "Cashback",
+      modeReferral: "Empfehlung",
+      modeCreator: "Creator",
+      noteCashback: "Nur Käufer-Cashback. Einen persönlichen Empfehlungslink gibt es hier nicht.",
+      noteReferral: "Cashback für den Käufer. Nach dem eigenen Kauf kann ein persönlicher Link geteilt werden.",
+      noteCreator: "Cashback, Empfehlung und eine Creator-Kampagne sind möglich.",
       navSuggest: "Vorschlag",
       navLogin: "Anmelden",
       submitLead: "BunDeal prüft den Vorschlag. Er wird nicht automatisch veröffentlicht.",
@@ -19,6 +27,7 @@
       fieldPrice: "Preis in Cent, optional",
       missing: "Die Deal-Liste ist in dieser öffentlichen Vorschau noch nicht angebunden.",
       empty: "Es ist noch kein freigeschalteter Deal vorhanden.",
+      loading: "Angebote werden geladen.",
       loadFailed: "Die Deals konnten nicht geladen werden.",
       priceLabel: "Du zahlst beim Händler",
       estimateNote: "Cashback entsteht erst aus bestätigter Provision. Ein angezeigter Schätzwert ist kein Versprechen.",
@@ -33,8 +42,16 @@
     },
     en: {
       proto: "Prototype. A purchase through BunDeal is not yet a payout.",
-      listTitle: "Published offers",
+      listTitle: "Offers",
       listLead: "The merchant price is the shop price. Cashback is a later BunDeal payment from confirmed commission.",
+      emptyTitle: "The first offers are on the way.",
+      emptyBody: "Each offer shows what it includes: cashback only, cashback with a referral, or a creator campaign as well.",
+      modeCashback: "Cashback",
+      modeReferral: "Referral",
+      modeCreator: "Creator",
+      noteCashback: "Buyer cashback only. There is no personal referral link on this offer.",
+      noteReferral: "Cashback for the buyer. After your own purchase you can share a personal link.",
+      noteCreator: "Cashback, a referral and a creator campaign are possible.",
       navSuggest: "Suggest",
       navLogin: "Sign in",
       submitLead: "BunDeal reviews the suggestion. It is not published automatically.",
@@ -45,6 +62,7 @@
       fieldPrice: "Price in cents, optional",
       missing: "The deal list is not connected in this public preview yet.",
       empty: "No published deal is available yet.",
+      loading: "Loading offers.",
       loadFailed: "The deals could not be loaded.",
       priceLabel: "You pay the merchant",
       estimateNote: "Cashback comes only from confirmed commission. A shown estimate is not a promise.",
@@ -118,46 +136,90 @@
     return typeof url === "string" && /^https:\/\/[^\s<>"'@#]+$/.test(url) && url.length <= 1000;
   }
 
+  function offerMode(value) {
+    return value === "cashback" || value === "creator" ? value : "referral";
+  }
+
+  function offerLabel(value) {
+    var mode = offerMode(value);
+    if (mode === "cashback") return t("modeCashback");
+    if (mode === "creator") return t("modeCreator");
+    return t("modeReferral");
+  }
+
+  function offerNote(value) {
+    var mode = offerMode(value);
+    if (mode === "cashback") return t("noteCashback");
+    if (mode === "creator") return t("noteCreator");
+    return t("noteReferral");
+  }
+
+  function offerBadge(value) {
+    var mode = offerMode(value);
+    var badge = document.createElement("span");
+    badge.className = "offer-pill is-" + mode;
+    badge.textContent = offerLabel(mode);
+    return badge;
+  }
+
   function renderList(rows) {
     var target = document.querySelector("[data-deal-list]");
     if (!target) return;
     target.replaceChildren();
     if (!rows.length) {
-      var empty = document.createElement("p");
-      empty.textContent = t("empty");
+      var empty = document.createElement("article");
+      empty.className = "empty-market";
+      var title = document.createElement("h2");
+      title.textContent = t("emptyTitle");
+      var body = document.createElement("p");
+      body.textContent = t("emptyBody");
+      empty.appendChild(title);
+      empty.appendChild(body);
       target.appendChild(empty);
       return;
     }
     rows.forEach(function (deal) {
+      var mode = offerMode(deal.offer_mode);
       var article = document.createElement("article");
-      article.className = "card";
-      var title = document.createElement("h3");
-      var link = document.createElement("a");
+      article.className = "deal-card is-" + mode;
       var href = "deal.html?slug=" + encodeURIComponent(deal.slug);
-      link.href = lang === "en" ? href + "&lang=en" : href;
-      link.textContent = deal.title;
-      title.appendChild(link);
+      if (lang === "en") href += "&lang=en";
+      var link = document.createElement("a");
+      link.href = href;
+      link.appendChild(offerBadge(mode));
+      var title = document.createElement("h3");
+      title.textContent = deal.title;
       var merchant = document.createElement("p");
       merchant.textContent = deal.merchant_name || "";
       var price = document.createElement("p");
+      price.className = "deal-price";
       price.textContent = formatMoney(deal.current_price_cents, deal.currency);
-      article.appendChild(title);
-      article.appendChild(merchant);
-      article.appendChild(price);
+      link.appendChild(title);
+      link.appendChild(merchant);
+      link.appendChild(price);
+      article.appendChild(link);
       target.appendChild(article);
     });
   }
 
   function loadList() {
     if (!client()) {
-      setStatus(t("missing"), true);
+      renderList([]);
       return;
     }
-    client().from("public_deals").select("slug,title,merchant_name,current_price_cents,currency").order("published_at", { ascending: false }).then(function (result) {
+    setStatus(t("loading"), false);
+    client().from("public_deals").select("slug,title,merchant_name,current_price_cents,currency,offer_mode").order("published_at", { ascending: false }).then(function (result) {
       if (result.error) {
+        return client().from("public_deals").select("slug,title,merchant_name,current_price_cents,currency").order("published_at", { ascending: false });
+      }
+      return result;
+    }).then(function (result) {
+      if (!result || result.error) {
         setStatus(t("loadFailed"), true);
+        renderList([]);
         return;
       }
+      setStatus("", false);
       renderList(result.data || []);
     });
   }
@@ -167,8 +229,14 @@
     document.querySelector("[data-deal-merchant]").textContent = deal.merchant_name || "";
     document.querySelector("[data-deal-description]").textContent = deal.description;
     document.querySelector("[data-deal-price]").textContent = formatMoney(deal.current_price_cents, deal.currency);
+    var badge = document.querySelector("[data-deal-mode]");
+    if (badge) {
+      badge.className = "offer-pill is-" + offerMode(deal.offer_mode);
+      badge.textContent = offerLabel(deal.offer_mode);
+      badge.hidden = false;
+    }
     var estimate = document.querySelector("[data-deal-estimate]");
-    estimate.textContent = deal.cashback_estimate_label ? deal.cashback_estimate_label + " " + t("estimateNote") : t("estimateNote");
+    estimate.textContent = offerNote(deal.offer_mode) + " " + t("estimateNote");
     var image = document.querySelector("[data-deal-image]");
     if (image && safeImage(deal.product_image_url)) {
       image.src = deal.product_image_url;
@@ -187,8 +255,13 @@
       setStatus(t("missing"), true);
       return;
     }
-    client().from("public_deals").select("slug,title,description,merchant_name,current_price_cents,currency,cashback_estimate_label,product_image_url").eq("slug", slug).maybeSingle().then(function (result) {
-      if (result.error || !result.data) {
+    client().from("public_deals").select("slug,title,description,merchant_name,current_price_cents,currency,cashback_estimate_label,product_image_url,offer_mode").eq("slug", slug).maybeSingle().then(function (result) {
+      if (result.error) {
+        return client().from("public_deals").select("slug,title,description,merchant_name,current_price_cents,currency,cashback_estimate_label,product_image_url").eq("slug", slug).maybeSingle();
+      }
+      return result;
+    }).then(function (result) {
+      if (!result || result.error || !result.data) {
         setStatus(t("loadFailed"), true);
         return;
       }

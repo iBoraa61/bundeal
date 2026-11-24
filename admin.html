@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Verwaltung – BunDeal</title>
   <link rel="icon" href="assets/logo-icon.png" type="image/png">
-  <link rel="stylesheet" href="css/styles.css?v=15">
+  <link rel="stylesheet" href="css/styles.css?v=16">
 </head>
 <body data-page="admin">
   <a class="skip" href="#inhalt">Zum Inhalt</a>
@@ -16,9 +16,8 @@
       <a class="brand" href="index.html"><img src="assets/logo.svg?v=4" alt="BunDeal, Gemeinsam mehr sparen."></a>
       <div class="header-controls">
         <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
-          <a href="index.html#ablauf">Ablauf</a>
-          <a href="beispiel-take3.html">Beispiel</a>
-          <a href="deals.html">Deals</a>
+          <a href="index.html">Deals</a>
+          <a href="was-ist-bundeal.html">Was ist BunDeal</a>
           <a href="submit-deal.html">Vorschlag</a>
           <a href="impressum.html">Impressum</a>
         </nav>
@@ -62,8 +61,20 @@
               <label>Beschreibung <textarea name="description" required minlength="10"></textarea></label>
               <label>Preis in Cent <input name="price" inputmode="numeric" required></label>
               <label>Bild-URL, optional <input name="image" type="url"></label>
+              <label>Art
+                <select name="offer_mode" required>
+                  <option value="cashback">Cashback</option>
+                  <option value="referral" selected>Empfehlung</option>
+                  <option value="creator">Creator</option>
+                </select>
+              </label>
+              <p class="fine">Cashback ist nur der Käufer. Empfehlung ergänzt den persönlichen Link. Creator ergänzt darauf eine Kampagne.</p>
               <button class="button button-primary" type="submit">Veröffentlichen</button>
             </form>
+            <div>
+              <h2>Art der Angebote</h2>
+              <div class="grid-2" data-offer-modes></div>
+            </div>
             <div>
               <h2>Offene Vorschläge</h2>
               <div class="grid-2" data-submission-list></div>
@@ -184,8 +195,8 @@
   <script src="js/config.js"></script>
   <script src="js/supabase-client.js"></script>
   <script src="js/utils.js"></script>
-  <script src="js/admin.js?v=6"></script>
-  <script src="js/account-menu.js"></script>
+  <script src="js/admin.js?v=7"></script>
+  <script src="js/account-menu.js?v=2"></script>
   <script src="js/site.js"></script>
 </body>
 </html>
