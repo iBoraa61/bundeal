@@ -62,6 +62,61 @@
     });
   }
 
+  function offerName(value) {
+    if (value === "cashback") return "Cashback";
+    if (value === "creator") return "Creator";
+    return lang === "en" ? "Referral" : "Empfehlung";
+  }
+
+  function loadOfferModes() {
+    var list = document.querySelector("[data-offer-modes]");
+    if (!list) return;
+    client().from("deals").select("id,title,offer_mode").eq("status", "published").order("title").then(function (result) {
+      list.replaceChildren();
+      if (!result.data || !result.data.length) {
+        var empty = document.createElement("p");
+        empty.textContent = lang === "en" ? "No published deal." : "Kein veröffentlichtes Angebot.";
+        list.appendChild(empty);
+        return;
+      }
+      result.data.forEach(function (row) {
+        var article = document.createElement("article");
+        article.className = "card deal-card is-" + (row.offer_mode || "referral");
+        var title = document.createElement("h3");
+        title.textContent = row.title;
+        var select = document.createElement("select");
+        ["cashback", "referral", "creator"].forEach(function (value) {
+          var option = document.createElement("option");
+          option.value = value;
+          option.textContent = offerName(value);
+          option.selected = row.offer_mode === value;
+          select.appendChild(option);
+        });
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "button button-secondary";
+        button.textContent = lang === "en" ? "Save type" : "Art speichern";
+        button.addEventListener("click", function () {
+          client().rpc("set_deal_offer_mode", {
+            p_deal_id: row.id,
+            p_offer_mode: select.value
+          }).then(function (response) {
+            status(response.error ? (lang === "en" ? "The type was not saved." : "Die Art wurde nicht gespeichert.") : (lang === "en" ? "Type saved." : "Art gespeichert."), !!response.error);
+            if (!response.error) loadOfferModes();
+          });
+        });
+        article.appendChild(title);
+        var current = document.createElement("p");
+        current.className = "offer-pill is-" + (row.offer_mode || "referral");
+        current.textContent = offerName(row.offer_mode);
+        article.appendChild(current);
+        article.appendChild(select);
+        article.appendChild(button);
+        list.appendChild(article);
+      });
+    });
+  }
+
   function loadSubmissions() {
     var list = document.querySelector("[data-submission-list]");
     if (!list) return;
@@ -74,6 +129,10 @@
         title.textContent = row.proposed_title;
         var url = document.createElement("p");
         url.textContent = row.proposed_url;
+        var mode = document.createElement("select");
+        mode.innerHTML = lang === "en"
+          ? "<option value=\"cashback\">Cashback</option><option value=\"referral\" selected>Referral</option><option value=\"creator\">Creator</option>"
+          : "<option value=\"cashback\">Cashback</option><option value=\"referral\" selected>Empfehlung</option><option value=\"creator\">Creator</option>";
         var approve = document.createElement("button");
         approve.type = "button";
         approve.className = "button button-primary";
@@ -89,12 +148,14 @@
             p_merchant_id: merchant,
             p_slug: slug,
             p_price_cents: row.proposed_price_cents,
-            p_currency: row.currency || "EUR"
+            p_currency: row.currency || "EUR",
+            p_offer_mode: mode.value
           }).then(function (response) {
             status(response.error ? (lang === "en" ? "Review failed." : "Die Prüfung ist fehlgeschlagen.") : (lang === "en" ? "Suggestion published." : "Vorschlag veröffentlicht."), !!response.error);
             if (!response.error) {
               loadSubmissions();
               loadMerchants();
+              loadOfferModes();
             }
           });
         });
@@ -113,6 +174,7 @@
         });
         article.appendChild(title);
         article.appendChild(url);
+        article.appendChild(mode);
         article.appendChild(approve);
         article.appendChild(reject);
         list.appendChild(article);
@@ -484,6 +546,7 @@
   requireAdmin().then(function (allowed) {
     if (!allowed) return;
     loadMerchants();
+    loadOfferModes();
     loadSubmissions();
     loadCashback();
     loadCreatorAdmin();
@@ -515,12 +578,14 @@
         p_description: form.description.value.trim(),
         p_price_cents: Number(form.price.value),
         p_currency: "EUR",
-        p_image_url: form.image.value.trim() || null
+        p_image_url: form.image.value.trim() || null,
+        p_offer_mode: form.offer_mode.value
       }).then(function (result) {
         status(result.error ? (lang === "en" ? "Deal was not published." : "Der Deal wurde nicht veröffentlicht.") : (lang === "en" ? "Deal published." : "Deal veröffentlicht."), !!result.error);
         if (!result.error) {
           form.reset();
           loadMerchants();
+          loadOfferModes();
         }
       });
     });

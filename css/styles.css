@@ -876,12 +876,118 @@ section.admin-panel.is-active {
   margin: 0;
 }
 
+.market-hero {
+  padding: 48px 0 12px;
+}
+
+.market-hero h1 {
+  margin: 0 0 12px;
+  font-family: Nunito, "Segoe UI", sans-serif;
+  font-size: 64px;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+.offer-legend,
+.deal-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.offer-legend {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 28px;
+}
+
+.offer-legend article,
+.deal-card,
+.empty-market {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+}
+
+.offer-legend article {
+  padding: 18px 18px 16px;
+}
+
+.offer-legend h2,
+.deal-card h3,
+.empty-market h2 {
+  margin: 12px 0 6px;
+  font-family: Nunito, "Segoe UI", sans-serif;
+}
+
+.offer-legend p,
+.deal-card p,
+.empty-market p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.deal-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding-bottom: 48px;
+}
+
+.deal-card a {
+  display: block;
+  padding: 18px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.deal-card.is-cashback { border-top: 6px solid var(--green); }
+.deal-card.is-referral { border-top: 6px solid var(--deal); }
+.deal-card.is-creator { border-top: 6px solid var(--amber); }
+
+.deal-price {
+  margin-top: 14px;
+  color: var(--navy);
+  font-family: Nunito, "Segoe UI", sans-serif;
+  font-size: 28px;
+}
+
+.offer-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.offer-pill::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.offer-pill.is-cashback { color: var(--green); background: #e7f7f1; }
+.offer-pill.is-referral { color: var(--deal); background: #efedff; }
+.offer-pill.is-creator { color: var(--amber); background: #fff3e2; }
+
+.empty-market {
+  grid-column: 1 / -1;
+  padding: 42px 28px;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(71, 58, 246, 0.12), transparent 28%),
+    radial-gradient(circle at 80% 0%, rgba(11, 143, 98, 0.12), transparent 24%),
+    var(--white);
+}
+
 @media (max-width: 860px) {
   h1 { font-size: 40px; }
-  .hero, .deal-layout, .grid-3, .grid-4, .grid-2, .footer-grid {
+  .hero, .deal-layout, .grid-3, .grid-4, .grid-2, .footer-grid, .offer-legend, .deal-grid {
     grid-template-columns: 1fr;
     display: grid;
   }
+  .market-hero h1 { font-size: 42px; }
   .amount { font-size: 52px; }
   .brand img { height: auto; }
   .account-menu-button { max-width: 148px; }
