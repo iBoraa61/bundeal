@@ -528,9 +528,15 @@ h2 { font-size: 32px; margin: 0 0 8px; }
 
 .deal-layout {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: minmax(240px, 380px) 1fr;
   gap: 22px;
   align-items: start;
+}
+
+.product-art.deal-media {
+  min-height: 320px;
+  padding: 0;
+  border-radius: 24px;
 }
 
 .product-art {
@@ -927,26 +933,129 @@ section.admin-panel.is-active {
 }
 
 .deal-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr;
+  gap: 16px;
   padding-bottom: 48px;
 }
 
-.deal-card a {
-  display: block;
-  padding: 18px;
+.deal-grid .deal-card a {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  min-height: 210px;
+  padding: 0;
   color: inherit;
   text-decoration: none;
 }
+
+.deal-grid .deal-card.is-cashback { border-top: 0; border-left: 6px solid var(--green); }
+.deal-grid .deal-card.is-referral { border-top: 0; border-left: 6px solid var(--deal); }
+.deal-grid .deal-card.is-creator { border-top: 0; border-left: 6px solid var(--amber); }
 
 .deal-card.is-cashback { border-top: 6px solid var(--green); }
 .deal-card.is-referral { border-top: 6px solid var(--deal); }
 .deal-card.is-creator { border-top: 6px solid var(--amber); }
 
-.deal-price {
-  margin-top: 14px;
+.deal-media {
+  position: relative;
+  min-height: 210px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.86), transparent 46%),
+    linear-gradient(160deg, #efeaff, #f7f8ff);
+}
+
+.deal-grid .deal-media { border-radius: 21px 0 0 21px; }
+.deal-media.is-cashback { background: linear-gradient(160deg, #e7f7f1, #f8fffc); }
+.deal-media.is-referral { background: linear-gradient(160deg, #efedff, #f8f7ff); }
+.deal-media.is-creator { background: linear-gradient(160deg, #fff3e2, #fffaf3); }
+
+.deal-media.is-empty::after {
+  content: "%";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(11, 18, 48, 0.16);
+  font-family: Nunito, "Segoe UI", sans-serif;
+  font-size: 92px;
+  font-weight: 800;
+  letter-spacing: -0.06em;
+}
+
+.deal-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+
+.deal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 18px 22px 16px;
+}
+
+.deal-kicker,
+.deal-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.deal-grid .deal-merchant {
+  margin: 0;
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.deal-grid .deal-card h3 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.12;
+}
+
+.deal-excerpt {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.deal-grid .deal-foot {
+  align-items: flex-start;
+  flex-direction: column;
+  margin-top: auto;
+}
+
+.deal-grid .deal-price-label,
+.deal-grid .deal-benefit {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.deal-grid .deal-benefit {
+  max-width: none;
+  color: var(--navy);
+  font-weight: 700;
+  text-align: left;
+}
+
+.deal-grid .deal-price {
+  margin: 0;
   color: var(--navy);
   font-family: Nunito, "Segoe UI", sans-serif;
-  font-size: 28px;
+  font-size: 34px;
+  letter-spacing: -0.04em;
+  line-height: 1;
 }
 
 .offer-pill {
@@ -988,6 +1097,10 @@ section.admin-panel.is-active {
     display: grid;
   }
   .market-hero h1 { font-size: 42px; }
+  .deal-grid .deal-card a { grid-template-columns: 1fr; }
+  .deal-grid .deal-media { min-height: 168px; border-radius: 21px 21px 0 0; }
+  .deal-benefit { max-width: none; text-align: left; }
+  .deal-foot { align-items: flex-start; flex-direction: column; }
   .amount { font-size: 52px; }
   .brand img { height: auto; }
   .account-menu-button { max-width: 148px; }
