@@ -14,6 +14,10 @@
       modeCashback: "Cashback",
       modeReferral: "Empfehlung",
       modeCreator: "Creator",
+      benefitCashback: "Sparen über Cashback",
+      benefitReferral: "Sparen über Cashback und Weiterempfehlung",
+      benefitCreator: "Sparen über Cashback, Weiterempfehlung und Creator",
+      estimateShort: "Schätzwert, kein Versprechen",
       noteCashback: "Nur Käufer-Cashback. Einen persönlichen Empfehlungslink gibt es hier nicht.",
       noteReferral: "Cashback für den Käufer. Nach dem eigenen Kauf kann ein persönlicher Link geteilt werden.",
       noteCreator: "Cashback, Empfehlung und eine Creator-Kampagne sind möglich.",
@@ -49,6 +53,10 @@
       modeCashback: "Cashback",
       modeReferral: "Referral",
       modeCreator: "Creator",
+      benefitCashback: "Save through cashback",
+      benefitReferral: "Save through cashback and a referral",
+      benefitCreator: "Save through cashback, a referral and a creator campaign",
+      estimateShort: "Estimate, not a promise",
       noteCashback: "Buyer cashback only. There is no personal referral link on this offer.",
       noteReferral: "Cashback for the buyer. After your own purchase you can share a personal link.",
       noteCreator: "Cashback, a referral and a creator campaign are possible.",
@@ -162,6 +170,39 @@
     return badge;
   }
 
+  function offerBenefit(value) {
+    var mode = offerMode(value);
+    if (mode === "cashback") return t("benefitCashback");
+    if (mode === "creator") return t("benefitCreator");
+    return t("benefitReferral");
+  }
+
+  function excerpt(value) {
+    var text = typeof value === "string" ? value.replace(/\s+/g, " ").trim() : "";
+    if (text.length <= 160) return text;
+    return text.slice(0, 157).trim() + "…";
+  }
+
+  function estimateLabel(value) {
+    var text = typeof value === "string" ? value.replace(/\s+/g, " ").trim() : "";
+    if (!text || text.length > 80) return "";
+    return text;
+  }
+
+  function dealMedia(deal, mode) {
+    var media = document.createElement("div");
+    media.className = "deal-media is-" + mode;
+    if (safeImage(deal.product_image_url)) {
+      var image = document.createElement("img");
+      image.src = deal.product_image_url;
+      image.alt = "";
+      media.appendChild(image);
+    } else {
+      media.classList.add("is-empty");
+    }
+    return media;
+  }
+
   function renderList(rows) {
     var target = document.querySelector("[data-deal-list]");
     if (!target) return;
@@ -186,17 +227,43 @@
       if (lang === "en") href += "&lang=en";
       var link = document.createElement("a");
       link.href = href;
-      link.appendChild(offerBadge(mode));
+      link.appendChild(dealMedia(deal, mode));
+      var body = document.createElement("div");
+      body.className = "deal-body";
+      var kicker = document.createElement("div");
+      kicker.className = "deal-kicker";
+      var merchant = document.createElement("p");
+      merchant.className = "deal-merchant";
+      merchant.textContent = [deal.merchant_name, deal.category_name].filter(Boolean).join(" · ");
+      kicker.appendChild(merchant);
+      kicker.appendChild(offerBadge(mode));
       var title = document.createElement("h3");
       title.textContent = deal.title;
-      var merchant = document.createElement("p");
-      merchant.textContent = deal.merchant_name || "";
+      var summary = document.createElement("p");
+      summary.className = "deal-excerpt";
+      summary.textContent = excerpt(deal.description);
+      var foot = document.createElement("div");
+      foot.className = "deal-foot";
+      var priceBlock = document.createElement("div");
+      var priceLabel = document.createElement("p");
+      priceLabel.className = "deal-price-label";
+      priceLabel.textContent = t("priceLabel");
       var price = document.createElement("p");
       price.className = "deal-price";
       price.textContent = formatMoney(deal.current_price_cents, deal.currency);
-      link.appendChild(title);
-      link.appendChild(merchant);
-      link.appendChild(price);
+      priceBlock.appendChild(priceLabel);
+      priceBlock.appendChild(price);
+      var saving = document.createElement("p");
+      saving.className = "deal-benefit";
+      var shownEstimate = estimateLabel(deal.cashback_estimate_label);
+      saving.textContent = shownEstimate ? offerBenefit(mode) + " · " + t("estimateShort") + ": " + shownEstimate : offerBenefit(mode);
+      foot.appendChild(priceBlock);
+      foot.appendChild(saving);
+      body.appendChild(kicker);
+      body.appendChild(title);
+      if (summary.textContent) body.appendChild(summary);
+      body.appendChild(foot);
+      link.appendChild(body);
       article.appendChild(link);
       target.appendChild(article);
     });
@@ -208,9 +275,10 @@
       return;
     }
     setStatus(t("loading"), false);
-    client().from("public_deals").select("slug,title,merchant_name,current_price_cents,currency,offer_mode").order("published_at", { ascending: false }).then(function (result) {
+    var columns = "slug,title,description,merchant_name,category_name,current_price_cents,currency,product_image_url,cashback_estimate_label";
+    client().from("public_deals").select(columns + ",offer_mode").order("published_at", { ascending: false }).then(function (result) {
       if (result.error) {
-        return client().from("public_deals").select("slug,title,merchant_name,current_price_cents,currency").order("published_at", { ascending: false });
+        return client().from("public_deals").select(columns).order("published_at", { ascending: false });
       }
       return result;
     }).then(function (result) {
@@ -237,11 +305,15 @@
     }
     var estimate = document.querySelector("[data-deal-estimate]");
     estimate.textContent = offerNote(deal.offer_mode) + " " + t("estimateNote");
+    var media = document.querySelector("[data-deal-media]");
+    if (media) media.className = "product-art deal-media is-" + offerMode(deal.offer_mode);
     var image = document.querySelector("[data-deal-image]");
     if (image && safeImage(deal.product_image_url)) {
       image.src = deal.product_image_url;
       image.alt = deal.title;
       image.hidden = false;
+    } else if (media) {
+      media.classList.add("is-empty");
     }
   }
 
