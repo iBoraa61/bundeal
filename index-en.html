@@ -7,7 +7,7 @@
   <title>BunDeal – Offers</title>
   <meta name="description" content="BunDeal shows offers with cashback, a referral, or a creator campaign.">
   <link rel="icon" href="assets/logo-icon.png" type="image/png">
-  <link rel="stylesheet" href="css/styles.css?v=25">
+  <link rel="stylesheet" href="css/styles.css?v=26">
 </head>
 <body data-page="deals">
   <a class="skip" href="#inhalt">Skip to content</a>
@@ -33,42 +33,36 @@
       <a href="legal-notice-en.html">Legal notice</a>
       <a class="language-switch" href="index.html" lang="de">DE</a>
     </nav>
-    <div class="wrap market-shelf">
+  </header>
+  <div class="market-shelf">
+    <div class="wrap shelf-inner">
       <div class="shelf-filters" data-deal-filters>
-        <div class="chip-row" data-category-chips></div>
-        <div class="filter-row">
-          <label>Type
-            <select data-mode-filter>
-              <option value="">All</option>
-              <option value="listing">Deal</option>
-              <option value="cashback">Cashback</option>
-              <option value="referral">Referral</option>
-              <option value="creator">Creator</option>
-            </select>
-          </label>
-          <label>Merchant <select data-merchant-filter><option value="">All</option></select></label>
-        </div>
+        <label class="category-filter">
+          <span class="category-icon" aria-hidden="true"></span>
+          Categories
+          <select data-category-filter>
+            <option value="">All</option>
+          </select>
+        </label>
+        <label>Type
+          <select data-mode-filter>
+            <option value="">All</option>
+            <option value="listing">Deal</option>
+            <option value="cashback">Cashback</option>
+            <option value="referral">Referral</option>
+            <option value="creator">Creator</option>
+          </select>
+        </label>
+        <label>Merchant <select data-merchant-filter><option value="">All</option></select></label>
       </div>
       <aside class="offer-legend" aria-label="Offer types">
-        <article>
-          <span class="offer-pill is-listing">Deal</span>
-          <p>Shop price only. No cashback.</p>
-        </article>
-        <article>
-          <span class="offer-pill is-cashback">Cashback</span>
-          <p>Buyer only, from confirmed commission.</p>
-        </article>
-        <article>
-          <span class="offer-pill is-referral">Referral</span>
-          <p>Buyer and one direct referrer.</p>
-        </article>
-        <article>
-          <span class="offer-pill is-creator">Creator</span>
-          <p>Plus an approved campaign.</p>
-        </article>
+        <span class="offer-pill is-listing" title="Shop price only. No cashback.">Deal</span>
+        <span class="offer-pill is-cashback" title="Buyer only, from confirmed commission.">Cashback</span>
+        <span class="offer-pill is-referral" title="Buyer and one direct referrer.">Referral</span>
+        <span class="offer-pill is-creator" title="Plus an approved campaign.">Creator</span>
       </aside>
     </div>
-  </header>
+  </div>
   <main id="inhalt">
     <section>
       <div class="wrap">
@@ -95,7 +89,7 @@
   <script src="js/config.js"></script>
   <script src="js/supabase-client.js"></script>
   <script src="js/utils.js"></script>
-  <script src="js/deals.js?v=13"></script>
+  <script src="js/deals.js?v=14"></script>
   <script src="js/account-menu.js?v=3"></script>
   <script src="js/site.js"></script>
 </body>
