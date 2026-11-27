@@ -19,8 +19,13 @@
       filterMerchant: "Händler",
       wasPrice: "Vorheriger Shop-Preis",
       shopCut: "im Shop",
-      temperature: "Temperatur",
+      temperature: "Empfehlungsanzahl",
       comments: "Kommentare",
+      share: "Teilen",
+      shared: "Link kopiert.",
+      like: "Gefällt mir",
+      liked: "Gespeichert",
+      likeSignIn: "Zum Speichern anmelden.",
       modeListing: "Deal",
       modeCashback: "Cashback",
       modeReferral: "Empfehlung",
@@ -71,8 +76,13 @@
       filterMerchant: "Merchant",
       wasPrice: "Previous shop price",
       shopCut: "in the shop",
-      temperature: "Temperature",
+      temperature: "Recommendations",
       comments: "Comments",
+      share: "Share",
+      shared: "Link copied.",
+      like: "Like",
+      liked: "Saved",
+      likeSignIn: "Sign in to save this deal.",
       modeListing: "Deal",
       modeCashback: "Cashback",
       modeReferral: "Referral",
@@ -266,6 +276,77 @@
     return media;
   }
 
+  function recommendationCount(deal) {
+    if (deal.recommendation_count !== undefined && deal.recommendation_count !== null) return Number(deal.recommendation_count);
+    return Math.max(0, Number(deal.temperature_score) || 0);
+  }
+
+  function copyLink(url) {
+    function legacy() {
+      var field = document.createElement("textarea");
+      field.value = url;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.left = "-999px";
+      document.body.appendChild(field);
+      field.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (error) { ok = false; }
+      field.remove();
+      return ok;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(url).then(function () { return true; }).catch(function () { return legacy(); });
+    }
+    return Promise.resolve(legacy());
+  }
+
+  function shareDeal(href, button) {
+    var url = new URL(href, window.location.href).href;
+    copyLink(url).then(function (ok) {
+      if (ok) button.textContent = t("shared");
+      else if (navigator.share) navigator.share({ url: url }).catch(function () {});
+    });
+  }
+
+  function cardActions(deal, href) {
+    var bar = document.createElement("div");
+    bar.className = "deal-card-actions";
+    var share = document.createElement("button");
+    share.type = "button";
+    share.className = "button button-secondary";
+    share.textContent = t("share");
+    share.addEventListener("click", function () { shareDeal(href, share); });
+    var like = document.createElement("button");
+    like.type = "button";
+    like.className = "button button-secondary";
+    like.textContent = t("like");
+    like.addEventListener("click", function () {
+      var api = client();
+      if (!api) return;
+      var next = !like.classList.contains("is-on");
+      api.rpc("set_deal_favorite", { p_slug: deal.slug, p_saved: next }).then(function (result) {
+        if (result.error) {
+          setStatus(result.error.message === "sign in required" ? t("likeSignIn") : t("saveFailed"), true);
+          return;
+        }
+        like.classList.toggle("is-on", next);
+        like.textContent = next ? t("liked") : t("like");
+      });
+    });
+    bar.appendChild(share);
+    bar.appendChild(like);
+    var api = client();
+    if (api) {
+      api.rpc("deal_community", { p_slug: deal.slug }).then(function (result) {
+        if (!result.data || !result.data.favorite) return;
+        like.classList.add("is-on");
+        like.textContent = t("liked");
+      });
+    }
+    return bar;
+  }
+
   function renderList(rows, kind) {
     var target = document.querySelector("[data-deal-list]");
     if (!target) return;
@@ -326,18 +407,24 @@
       saving.textContent = mode === "listing" || !shownEstimate ? offerBenefit(mode) : offerBenefit(mode) + " · " + t("estimateShort") + ": " + shownEstimate;
       foot.appendChild(priceBlock);
       foot.appendChild(saving);
-      if (deal.temperature_score !== undefined && deal.temperature_score !== null) {
-        var meta = document.createElement("p");
-        meta.className = "fine";
-        meta.textContent = t("temperature") + " " + deal.temperature_score + " · " + t("comments") + " " + (deal.comment_count || 0);
-        foot.appendChild(meta);
-      }
+      var signals = document.createElement("div");
+      signals.className = "deal-signals";
+      var degree = document.createElement("span");
+      degree.className = "deal-signal";
+      degree.textContent = t("temperature") + " " + recommendationCount(deal);
+      var comments = document.createElement("span");
+      comments.className = "deal-signal is-comments";
+      comments.textContent = t("comments") + " " + (deal.comment_count || 0);
+      signals.appendChild(degree);
+      signals.appendChild(comments);
+      foot.appendChild(signals);
       body.appendChild(kicker);
       body.appendChild(title);
       if (summary.textContent) body.appendChild(summary);
       body.appendChild(foot);
       link.appendChild(body);
       article.appendChild(link);
+      article.appendChild(cardActions(deal, href));
       target.appendChild(article);
     });
   }
@@ -443,15 +530,18 @@
   }
 
   function bindFilters() {
-    var form = document.querySelector("[data-deal-filters]");
-    if (!form) return;
-    var search = form.querySelector("[data-deal-search]");
-    var mode = form.querySelector("[data-mode-filter]");
-    var merchant = form.querySelector("[data-merchant-filter]");
-    if (search) search.addEventListener("input", function () {
+    var search = document.querySelector("[data-deal-search]");
+    var mode = document.querySelector("[data-mode-filter]");
+    var merchant = document.querySelector("[data-merchant-filter]");
+    if (search) {
+      if (params.get("q")) search.value = params.get("q");
       filters.q = search.value;
-      showFiltered();
-    });
+      if (search.form) search.form.addEventListener("submit", function (event) { event.preventDefault(); });
+      search.addEventListener("input", function () {
+        filters.q = search.value;
+        showFiltered();
+      });
+    }
     if (mode) mode.addEventListener("change", function () {
       filters.mode = mode.value;
       showFiltered();
@@ -471,7 +561,7 @@
     setStatus(t("loading"), false);
     renderLoading();
     var columns = "slug,title,description,merchant_name,category_name,current_price_cents,currency,product_image_url,cashback_estimate_label";
-    var extra = ",offer_mode,original_price_cents,category_slug,merchant_slug,temperature_score,comment_count";
+    var extra = ",offer_mode,original_price_cents,category_slug,merchant_slug,temperature_score,comment_count,recommendation_count";
     client().from("public_deals").select(columns + extra).order("published_at", { ascending: false }).then(function (result) {
       if (result.error) {
         return client().from("public_deals").select(columns + ",offer_mode").order("published_at", { ascending: false });

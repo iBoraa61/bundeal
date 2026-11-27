@@ -7,77 +7,72 @@
   <title>BunDeal – Angebote</title>
   <meta name="description" content="BunDeal zeigt Angebote mit Cashback, Empfehlung oder Creator-Kampagne.">
   <link rel="icon" href="assets/logo-icon.png" type="image/png">
-  <link rel="stylesheet" href="css/styles.css?v=22">
+  <link rel="stylesheet" href="css/styles.css?v=25">
 </head>
 <body data-page="deals">
   <a class="skip" href="#inhalt">Zum Inhalt</a>
   <div class="proto" data-i18n="proto">Kauf noch nicht möglich. Die Angebote sind Beispiele, eine Auszahlung ist nicht freigeschaltet.</div>
   <header class="site-header">
     <div class="wrap header-inner">
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menü"><span class="burger-lines" aria-hidden="true"></span><span class="visually-hidden">Menü</span></button>
       <a class="brand" href="index.html"><img src="assets/logo.svg?v=4" alt="BunDeal, Gemeinsam mehr sparen."></a>
-      <div class="header-controls">
-        <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
-          <a href="index.html" aria-current="page">Deals</a>
-          <a href="was-ist-bundeal.html">Was ist BunDeal</a>
-          <a href="submit-deal.html">Vorschlag</a>
-          <a href="impressum.html">Impressum</a>
-        </nav>
+      <form class="header-search" role="search">
+        <input type="search" data-deal-search placeholder="Deals suchen" aria-label="Suche">
+      </form>
+      <div class="header-actions">
         <div class="account-slot" data-account-slot>
-          <a class="account-menu-button" href="login.html">Anmelden</a>
+          <a class="account-menu-button" href="login.html">Anmelden/Registrieren</a>
         </div>
-        <a class="language-switch" href="index-en.html" lang="en">EN</a>
-        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menü</button>
+        <a class="create-button" href="submit-deal.html">+ Erstellen</a>
       </div>
+    </div>
+    <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
+      <a href="index.html" aria-current="page">Deals</a>
+      <a href="was-ist-bundeal.html">Was ist BunDeal</a>
+      <a href="datenschutz.html">Datenschutz</a>
+      <a href="impressum.html">Impressum</a>
+      <a class="language-switch" href="index-en.html" lang="en">EN</a>
+    </nav>
+    <div class="wrap market-shelf">
+      <div class="shelf-filters" data-deal-filters>
+        <div class="chip-row" data-category-chips></div>
+        <div class="filter-row">
+          <label>Art
+            <select data-mode-filter>
+              <option value="">Alle</option>
+              <option value="listing">Deal</option>
+              <option value="cashback">Cashback</option>
+              <option value="referral">Empfehlung</option>
+              <option value="creator">Creator</option>
+            </select>
+          </label>
+          <label>Händler <select data-merchant-filter><option value="">Alle</option></select></label>
+        </div>
+      </div>
+      <aside class="offer-legend" aria-label="Angebotsarten">
+        <article>
+          <span class="offer-pill is-listing">Deal</span>
+          <p>Nur der Shop-Preis. Kein Cashback.</p>
+        </article>
+        <article>
+          <span class="offer-pill is-cashback">Cashback</span>
+          <p>Nur der Käufer, aus bestätigter Provision.</p>
+        </article>
+        <article>
+          <span class="offer-pill is-referral">Empfehlung</span>
+          <p>Käufer und ein direkter Empfehler.</p>
+        </article>
+        <article>
+          <span class="offer-pill is-creator">Creator</span>
+          <p>Zusätzlich eine freigegebene Kampagne.</p>
+        </article>
+      </aside>
     </div>
   </header>
   <main id="inhalt">
-    <section class="market-hero">
-      <div class="wrap">
-        <p class="eyebrow">Live-Angebote</p>
-        <h1 data-i18n="listTitle">Angebote</h1>
-        <p class="lead" data-i18n="listLead">Der Händlerpreis ist der Preis im Shop. Cashback ist eine spätere Zahlung von BunDeal aus bestätigter Provision.</p>
-        <div class="offer-legend">
-          <article>
-            <span class="offer-pill is-listing">Deal</span>
-            <h2>Nur der Preis</h2>
-            <p>Kein Cashback. Der Preis ist der Preis im Shop.</p>
-          </article>
-          <article>
-            <span class="offer-pill is-cashback">Cashback</span>
-            <h2>Nur der Käufer</h2>
-            <p>Cashback aus bestätigter Provision. Kein persönlicher Empfehlungslink.</p>
-          </article>
-          <article>
-            <span class="offer-pill is-referral">Empfehlung</span>
-            <h2>Käufer und direkter Empfehler</h2>
-            <p>Nach dem eigenen Kauf kann ein persönlicher Link geteilt werden.</p>
-          </article>
-          <article>
-            <span class="offer-pill is-creator">Creator</span>
-            <h2>Dazu eine Kampagne</h2>
-            <p>Nur für ein freigegebenes Creator-Konto, zusätzlich zu Cashback und Empfehlung.</p>
-          </article>
-        </div>
-      </div>
-    </section>
     <section>
       <div class="wrap">
-        <form class="deal-filters" data-deal-filters>
-          <label>Suche <input type="search" data-deal-search placeholder="Titel oder Händler"></label>
-          <div class="chip-row" data-category-chips></div>
-          <div class="filter-row">
-            <label>Art
-              <select data-mode-filter>
-                <option value="">Alle</option>
-                <option value="listing">Deal</option>
-                <option value="cashback">Cashback</option>
-                <option value="referral">Empfehlung</option>
-                <option value="creator">Creator</option>
-              </select>
-            </label>
-            <label>Händler <select data-merchant-filter><option value="">Alle</option></select></label>
-          </div>
-        </form>
+        <h1 class="visually-hidden" data-i18n="listTitle">Angebote</h1>
         <div class="deal-grid" data-deal-list></div>
         <p class="status" data-deal-status role="status"></p>
       </div>
@@ -100,8 +95,8 @@
   <script src="js/config.js"></script>
   <script src="js/supabase-client.js"></script>
   <script src="js/utils.js"></script>
-  <script src="js/deals.js?v=11"></script>
-  <script src="js/account-menu.js?v=2"></script>
+  <script src="js/deals.js?v=13"></script>
+  <script src="js/account-menu.js?v=3"></script>
   <script src="js/site.js"></script>
 </body>
 </html>

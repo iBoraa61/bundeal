@@ -7,34 +7,38 @@
   var slug = params.get("slug") || "";
   var text = lang === "en"
     ? {
-      temperature: "Temperature",
-      up: "Up",
+      temperature: "Recommendations",
+      up: "Recommend",
       down: "Down",
-      save: "Save",
+      save: "Like",
       saved: "Saved",
+      share: "Share",
+      shared: "Link copied.",
       comments: "Comments",
       comment: "Comment",
       submit: "Save comment",
       report: "Report",
       empty: "No comments yet.",
-      signIn: "Sign in to vote, save or comment.",
+      signIn: "Sign in to recommend, save or comment.",
       savedNote: "Comment saved.",
       reported: "Comment reported. It waits for review.",
       failed: "That was not saved.",
       limit: "The comment limit is reached."
     }
     : {
-      temperature: "Temperatur",
-      up: "Hoch",
+      temperature: "Empfehlungsanzahl",
+      up: "Empfehlen",
       down: "Runter",
-      save: "Merken",
-      saved: "Gemerkt",
+      save: "Gefällt mir",
+      saved: "Gespeichert",
+      share: "Teilen",
+      shared: "Link kopiert.",
       comments: "Kommentare",
       comment: "Kommentar",
       submit: "Kommentar speichern",
       report: "Melden",
       empty: "Noch kein Kommentar.",
-      signIn: "Zum Abstimmen, Merken oder Kommentieren anmelden.",
+      signIn: "Zum Empfehlen, Speichern oder Kommentieren anmelden.",
       savedNote: "Kommentar gespeichert.",
       reported: "Kommentar gemeldet. Er wartet auf die Prüfung.",
       failed: "Das wurde nicht gespeichert.",
@@ -56,13 +60,25 @@
     return text.failed;
   }
 
+  function degreeLine(data) {
+    var count = data && data.recommendations !== undefined && data.recommendations !== null
+      ? Number(data.recommendations)
+      : Math.max(0, Number(data && data.temperature) || 0);
+    return text.temperature + " " + count;
+  }
+
   function render(data) {
     var score = document.querySelector("[data-temperature]");
-    if (score) score.textContent = text.temperature + " " + ((data && data.temperature) || 0);
+    if (score) score.textContent = degreeLine(data);
     root.querySelectorAll("[data-vote]").forEach(function (button) {
       var direction = Number(button.getAttribute("data-vote"));
-      button.classList.toggle("is-on", data && Number(data.my_vote) === direction);
-      button.textContent = direction === 1 ? text.up : text.down;
+      if (direction !== 1) {
+        button.hidden = true;
+        return;
+      }
+      button.hidden = false;
+      button.classList.toggle("is-on", data && Number(data.my_vote) === 1);
+      button.textContent = text.up;
     });
     var favorite = root.querySelector("[data-favorite]");
     if (favorite) {
@@ -128,6 +144,31 @@
         if (result.error) status(reasonMessage(result.error), true);
         else load();
       });
+    });
+  });
+  var share = root.querySelector("[data-share]");
+  if (share) share.textContent = text.share;
+  if (share) share.addEventListener("click", function () {
+    var url = window.location.href;
+    function legacy() {
+      var field = document.createElement("textarea");
+      field.value = url;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.left = "-999px";
+      document.body.appendChild(field);
+      field.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (error) { ok = false; }
+      field.remove();
+      return ok;
+    }
+    var copy = navigator.clipboard && navigator.clipboard.writeText
+      ? navigator.clipboard.writeText(url).then(function () { return true; }).catch(function () { return legacy(); })
+      : Promise.resolve(legacy());
+    copy.then(function (ok) {
+      if (ok) status(text.shared, false);
+      else if (navigator.share) navigator.share({ url: url }).catch(function () {});
     });
   });
   var favorite = root.querySelector("[data-favorite]");

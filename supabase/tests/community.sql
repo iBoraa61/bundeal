@@ -67,6 +67,9 @@ begin
   if community -> 'comments' <> '[]'::jsonb or (community ->> 'temperature')::int <> -1 then
     raise exception 'reported comment stayed public or the vote was lost';
   end if;
+  if (community ->> 'recommendations')::int <> 0 then
+    raise exception 'a downvote counted as a recommendation';
+  end if;
 
   perform set_config('request.jwt.claims', json_build_object('sub', admin_id::text, 'role', 'authenticated')::text, true);
   perform set_config('request.jwt.claim.sub', admin_id::text, true);
@@ -99,6 +102,9 @@ begin
   end if;
   if (select comment_count from public.public_deals where slug = 'l4-deal') <> 0 then
     raise exception 'hidden comment was counted';
+  end if;
+  if (select recommendation_count from public.public_deals where slug = 'l4-deal') <> 0 then
+    raise exception 'recommendation count included a downvote';
   end if;
 end;
 $$;
