@@ -19,6 +19,7 @@
       creator: "Creator",
       simulation: "Simulation",
       live: "Live",
+      payoutEmpty: "No payout recorded. Nothing is transferred from here.",
       pendingLabel: "Pending",
       availableLabel: "Available",
       referrals: "Active referrals",
@@ -51,6 +52,7 @@
       creator: "Creator",
       simulation: "Simulation",
       live: "Live",
+      payoutEmpty: "Keine Auszahlung erfasst. Von hier wird nichts überwiesen.",
       pendingLabel: "Ausstehend",
       availableLabel: "Verfügbar",
       referrals: "Aktive Empfehlungen",
@@ -291,6 +293,29 @@
     renderHistory(snapshot.data.history, ["creator"]);
     renderReferrals(snapshot.data);
     renderSubmissions(snapshot.data.submissions);
+    window.bundealSupabase.from("payout_markers").select("environment,amount_cents,reference_note,created_at").order("created_at", { ascending: false }).then(function (payouts) {
+      var list = document.querySelector("[data-payout-history]");
+      if (!list) return;
+      var rows = payouts.data || [];
+      list.replaceChildren();
+      if (!rows.length) {
+        var empty = document.createElement("p");
+        empty.textContent = text.payoutEmpty;
+        list.appendChild(empty);
+        return;
+      }
+      rows.forEach(function (row) {
+        var article = document.createElement("article");
+        article.className = "card";
+        var title = document.createElement("h3");
+        title.textContent = (row.environment === "live" ? text.live : text.simulation) + " · " + (row.amount_cents / 100).toLocaleString(lang === "en" ? "en-GB" : "de-DE", { style: "currency", currency: "EUR" });
+        var body = document.createElement("p");
+        body.textContent = row.reference_note;
+        article.appendChild(title);
+        article.appendChild(body);
+        list.appendChild(article);
+      });
+    });
     renderApplication(application.data, isCreator);
     var requested = (window.location.hash || "#overview").slice(1);
     showTab(requested === "creator" && !isCreator ? "overview" : requested);

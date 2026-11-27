@@ -1,6 +1,8 @@
 # BunDeal
 
-Statische Website mit geplanter Supabase-Grundlage. Die öffentliche Seite bleibt auf `main`. Backend-Arbeit liegt auf `feature/bundeal-backend`.
+Statische Website mit Supabase-Backend auf `feature/bundeal-backend`. Die öffentliche Seite bleibt auf `main` (GitHub Pages / `bundeal.de`).
+
+Aktueller Stand und Weg zum Livegang: `PROJECT_AUDIT.md`, `ARCHITECTURE.md`, `IMPLEMENTATION_ROADMAP.md`, `LIVE_READINESS_CHECKLIST.md`, Pilot: `PILOT.md`.
 
 ## Phase 1
 

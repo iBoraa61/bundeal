@@ -6,18 +6,31 @@
   var page = document.body.getAttribute("data-page");
   var copy = {
     de: {
-      proto: "Prototyp. Ein Kauf ist über BunDeal noch nicht als Auszahlung möglich.",
+      proto: "Kauf noch nicht möglich. Die Angebote sind Beispiele, eine Auszahlung ist nicht freigeschaltet.",
       listTitle: "Angebote",
       listLead: "Der Händlerpreis ist der Preis im Shop. Cashback ist eine spätere Zahlung von BunDeal aus bestätigter Provision.",
       emptyTitle: "Die ersten Angebote folgen.",
-      emptyBody: "Jedes Angebot zeigt, was dazu gehört: nur Cashback, Cashback mit Empfehlung, oder zusätzlich eine Creator-Kampagne.",
+      emptyBody: "Jedes Angebot zeigt, was dazu gehört: ein Deal ohne Cashback, nur Cashback, Cashback mit Empfehlung, oder zusätzlich eine Creator-Kampagne.",
+      noHitsTitle: "Keine Treffer",
+      noHitsBody: "Suchbegriff, Kategorie, Art oder Händler ändern.",
+      filterSearch: "Suche",
+      filterAll: "Alle",
+      filterMode: "Art",
+      filterMerchant: "Händler",
+      wasPrice: "Vorheriger Shop-Preis",
+      shopCut: "im Shop",
+      temperature: "Temperatur",
+      comments: "Kommentare",
+      modeListing: "Deal",
       modeCashback: "Cashback",
       modeReferral: "Empfehlung",
       modeCreator: "Creator",
+      benefitListing: "Kein Cashback auf diesem Angebot",
       benefitCashback: "Sparen über Cashback",
       benefitReferral: "Sparen über Cashback und Weiterempfehlung",
       benefitCreator: "Sparen über Cashback, Weiterempfehlung und Creator",
       estimateShort: "Schätzwert, kein Versprechen",
+      noteListing: "Nur der Preis beim Händler. BunDeal zahlt hier kein Cashback.",
       noteCashback: "Nur Käufer-Cashback. Einen persönlichen Empfehlungslink gibt es hier nicht.",
       noteReferral: "Cashback für den Käufer. Nach dem eigenen Kauf kann ein persönlicher Link geteilt werden.",
       noteCreator: "Cashback, Empfehlung und eine Creator-Kampagne sind möglich.",
@@ -45,18 +58,31 @@
       noPending: "Du hast keinen offenen Vorschlag."
     },
     en: {
-      proto: "Prototype. A purchase through BunDeal is not yet a payout.",
+      proto: "Purchase is not possible yet. The offers are examples, and no payout is enabled.",
       listTitle: "Offers",
       listLead: "The merchant price is the shop price. Cashback is a later BunDeal payment from confirmed commission.",
       emptyTitle: "The first offers are on the way.",
-      emptyBody: "Each offer shows what it includes: cashback only, cashback with a referral, or a creator campaign as well.",
+      emptyBody: "Each offer shows what it includes: a deal without cashback, cashback only, cashback with a referral, or a creator campaign as well.",
+      noHitsTitle: "No matches",
+      noHitsBody: "Change the search, category, type or merchant.",
+      filterSearch: "Search",
+      filterAll: "All",
+      filterMode: "Type",
+      filterMerchant: "Merchant",
+      wasPrice: "Previous shop price",
+      shopCut: "in the shop",
+      temperature: "Temperature",
+      comments: "Comments",
+      modeListing: "Deal",
       modeCashback: "Cashback",
       modeReferral: "Referral",
       modeCreator: "Creator",
+      benefitListing: "No cashback on this offer",
       benefitCashback: "Save through cashback",
       benefitReferral: "Save through cashback and a referral",
       benefitCreator: "Save through cashback, a referral and a creator campaign",
       estimateShort: "Estimate, not a promise",
+      noteListing: "Shop price only. BunDeal does not pay cashback on this offer.",
       noteCashback: "Buyer cashback only. There is no personal referral link on this offer.",
       noteReferral: "Cashback for the buyer. After your own purchase you can share a personal link.",
       noteCreator: "Cashback, a referral and a creator campaign are possible.",
@@ -145,11 +171,13 @@
   }
 
   function offerMode(value) {
-    return value === "cashback" || value === "creator" ? value : "referral";
+    if (value === "listing" || value === "cashback" || value === "creator") return value;
+    return "referral";
   }
 
   function offerLabel(value) {
     var mode = offerMode(value);
+    if (mode === "listing") return t("modeListing");
     if (mode === "cashback") return t("modeCashback");
     if (mode === "creator") return t("modeCreator");
     return t("modeReferral");
@@ -157,6 +185,7 @@
 
   function offerNote(value) {
     var mode = offerMode(value);
+    if (mode === "listing") return t("noteListing");
     if (mode === "cashback") return t("noteCashback");
     if (mode === "creator") return t("noteCreator");
     return t("noteReferral");
@@ -172,6 +201,7 @@
 
   function offerBenefit(value) {
     var mode = offerMode(value);
+    if (mode === "listing") return t("benefitListing");
     if (mode === "cashback") return t("benefitCashback");
     if (mode === "creator") return t("benefitCreator");
     return t("benefitReferral");
@@ -189,6 +219,39 @@
     return text;
   }
 
+  function shopCut(deal) {
+    var original = Number(deal.original_price_cents);
+    var current = Number(deal.current_price_cents);
+    if (!Number.isFinite(original) || !Number.isFinite(current)) return null;
+    original = Math.trunc(original);
+    current = Math.trunc(current);
+    if (original <= current || original <= 0) return null;
+    return { original: original, percent: Math.floor((original - current) * 100 / original) };
+  }
+
+  function priceStack(deal) {
+    var block = document.createElement("div");
+    var priceLabel = document.createElement("p");
+    priceLabel.className = "deal-price-label";
+    priceLabel.textContent = t("priceLabel");
+    var price = document.createElement("p");
+    price.className = "deal-price";
+    price.textContent = formatMoney(deal.current_price_cents, deal.currency);
+    block.appendChild(priceLabel);
+    block.appendChild(price);
+    var cut = shopCut(deal);
+    if (cut) {
+      var was = document.createElement("p");
+      was.className = "deal-was";
+      var old = document.createElement("s");
+      old.textContent = formatMoney(cut.original, deal.currency);
+      was.appendChild(old);
+      was.appendChild(document.createTextNode(" " + t("wasPrice") + " · −" + cut.percent + " % " + t("shopCut")));
+      block.appendChild(was);
+    }
+    return block;
+  }
+
   function dealMedia(deal, mode) {
     var media = document.createElement("div");
     media.className = "deal-media is-" + mode;
@@ -203,17 +266,29 @@
     return media;
   }
 
-  function renderList(rows) {
+  function renderList(rows, kind) {
     var target = document.querySelector("[data-deal-list]");
     if (!target) return;
     target.replaceChildren();
+    target.removeAttribute("aria-busy");
     if (!rows.length) {
       var empty = document.createElement("article");
       empty.className = "empty-market";
       var title = document.createElement("h2");
-      title.textContent = t("emptyTitle");
       var body = document.createElement("p");
-      body.textContent = t("emptyBody");
+      if (kind === "filter") {
+        title.textContent = t("noHitsTitle");
+        body.textContent = t("noHitsBody");
+      } else if (kind === "offline") {
+        title.textContent = t("emptyTitle");
+        body.textContent = t("missing");
+      } else if (kind === "error") {
+        title.textContent = t("loadFailed");
+        body.textContent = t("empty");
+      } else {
+        title.textContent = t("emptyTitle");
+        body.textContent = t("emptyBody");
+      }
       empty.appendChild(title);
       empty.appendChild(body);
       target.appendChild(empty);
@@ -244,21 +319,19 @@
       summary.textContent = excerpt(deal.description);
       var foot = document.createElement("div");
       foot.className = "deal-foot";
-      var priceBlock = document.createElement("div");
-      var priceLabel = document.createElement("p");
-      priceLabel.className = "deal-price-label";
-      priceLabel.textContent = t("priceLabel");
-      var price = document.createElement("p");
-      price.className = "deal-price";
-      price.textContent = formatMoney(deal.current_price_cents, deal.currency);
-      priceBlock.appendChild(priceLabel);
-      priceBlock.appendChild(price);
+      var priceBlock = priceStack(deal);
       var saving = document.createElement("p");
       saving.className = "deal-benefit";
       var shownEstimate = estimateLabel(deal.cashback_estimate_label);
-      saving.textContent = shownEstimate ? offerBenefit(mode) + " · " + t("estimateShort") + ": " + shownEstimate : offerBenefit(mode);
+      saving.textContent = mode === "listing" || !shownEstimate ? offerBenefit(mode) : offerBenefit(mode) + " · " + t("estimateShort") + ": " + shownEstimate;
       foot.appendChild(priceBlock);
       foot.appendChild(saving);
+      if (deal.temperature_score !== undefined && deal.temperature_score !== null) {
+        var meta = document.createElement("p");
+        meta.className = "fine";
+        meta.textContent = t("temperature") + " " + deal.temperature_score + " · " + t("comments") + " " + (deal.comment_count || 0);
+        foot.appendChild(meta);
+      }
       body.appendChild(kicker);
       body.appendChild(title);
       if (summary.textContent) body.appendChild(summary);
@@ -269,26 +342,150 @@
     });
   }
 
+  var catalog = [];
+  var filters = { q: "", category: "", mode: "", merchant: "" };
+
+  function renderLoading() {
+    var target = document.querySelector("[data-deal-list]");
+    if (!target) return;
+    target.replaceChildren();
+    target.setAttribute("aria-busy", "true");
+    [0, 1].forEach(function () {
+      var card = document.createElement("article");
+      card.className = "deal-card is-loading";
+      var media = document.createElement("div");
+      media.className = "deal-media";
+      var body = document.createElement("div");
+      body.className = "deal-body";
+      var line = document.createElement("p");
+      line.className = "skeleton";
+      var short = document.createElement("p");
+      short.className = "skeleton short";
+      body.appendChild(line);
+      body.appendChild(short);
+      card.appendChild(media);
+      card.appendChild(body);
+      target.appendChild(card);
+    });
+  }
+
+  function filteredRows() {
+    var query = filters.q.trim().toLowerCase();
+    return catalog.filter(function (deal) {
+      if (filters.category && deal.category_slug !== filters.category) return false;
+      if (filters.mode && offerMode(deal.offer_mode) !== filters.mode) return false;
+      if (filters.merchant && deal.merchant_slug !== filters.merchant) return false;
+      if (!query) return true;
+      var haystack = [deal.title, deal.description, deal.merchant_name, deal.category_name].join(" ").toLowerCase();
+      return haystack.indexOf(query) !== -1;
+    });
+  }
+
+  function fillSelect(select, rows, placeholder) {
+    if (!select) return;
+    var current = select.value;
+    select.replaceChildren();
+    var all = document.createElement("option");
+    all.value = "";
+    all.textContent = placeholder;
+    select.appendChild(all);
+    rows.forEach(function (row) {
+      var option = document.createElement("option");
+      option.value = row.value;
+      option.textContent = row.label;
+      select.appendChild(option);
+    });
+    if (Array.prototype.some.call(select.options, function (option) { return option.value === current; })) {
+      select.value = current;
+    }
+  }
+
+  function renderFilters() {
+    var chips = document.querySelector("[data-category-chips]");
+    if (chips) {
+      var seen = {};
+      var categories = [];
+      catalog.forEach(function (deal) {
+        if (!deal.category_slug || seen[deal.category_slug]) return;
+        seen[deal.category_slug] = true;
+        categories.push({ value: deal.category_slug, label: deal.category_name || deal.category_slug });
+      });
+      chips.replaceChildren();
+      [{ value: "", label: t("filterAll") }].concat(categories).forEach(function (category) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "chip" + (filters.category === category.value ? " is-on" : "");
+        button.textContent = category.label;
+        button.setAttribute("aria-pressed", filters.category === category.value ? "true" : "false");
+        button.addEventListener("click", function () {
+          filters.category = category.value;
+          showFiltered();
+        });
+        chips.appendChild(button);
+      });
+    }
+    var merchants = [];
+    var seenMerchants = {};
+    catalog.forEach(function (deal) {
+      if (!deal.merchant_slug || seenMerchants[deal.merchant_slug]) return;
+      seenMerchants[deal.merchant_slug] = true;
+      merchants.push({ value: deal.merchant_slug, label: deal.merchant_name || deal.merchant_slug });
+    });
+    merchants.sort(function (a, b) { return a.label.localeCompare(b.label, lang); });
+    fillSelect(document.querySelector("[data-merchant-filter]"), merchants, t("filterAll"));
+  }
+
+  function showFiltered() {
+    renderFilters();
+    var rows = filteredRows();
+    var narrowed = !!(filters.q.trim() || filters.category || filters.mode || filters.merchant);
+    renderList(rows, rows.length ? "" : (narrowed ? "filter" : "catalog"));
+  }
+
+  function bindFilters() {
+    var form = document.querySelector("[data-deal-filters]");
+    if (!form) return;
+    var search = form.querySelector("[data-deal-search]");
+    var mode = form.querySelector("[data-mode-filter]");
+    var merchant = form.querySelector("[data-merchant-filter]");
+    if (search) search.addEventListener("input", function () {
+      filters.q = search.value;
+      showFiltered();
+    });
+    if (mode) mode.addEventListener("change", function () {
+      filters.mode = mode.value;
+      showFiltered();
+    });
+    if (merchant) merchant.addEventListener("change", function () {
+      filters.merchant = merchant.value;
+      showFiltered();
+    });
+  }
+
   function loadList() {
     if (!client()) {
-      renderList([]);
+      setStatus(t("missing"), false);
+      renderList([], "offline");
       return;
     }
     setStatus(t("loading"), false);
+    renderLoading();
     var columns = "slug,title,description,merchant_name,category_name,current_price_cents,currency,product_image_url,cashback_estimate_label";
-    client().from("public_deals").select(columns + ",offer_mode").order("published_at", { ascending: false }).then(function (result) {
+    var extra = ",offer_mode,original_price_cents,category_slug,merchant_slug,temperature_score,comment_count";
+    client().from("public_deals").select(columns + extra).order("published_at", { ascending: false }).then(function (result) {
       if (result.error) {
-        return client().from("public_deals").select(columns).order("published_at", { ascending: false });
+        return client().from("public_deals").select(columns + ",offer_mode").order("published_at", { ascending: false });
       }
       return result;
     }).then(function (result) {
       if (!result || result.error) {
         setStatus(t("loadFailed"), true);
-        renderList([]);
+        renderList([], "error");
         return;
       }
       setStatus("", false);
-      renderList(result.data || []);
+      catalog = result.data || [];
+      showFiltered();
     });
   }
 
@@ -297,6 +494,12 @@
     document.querySelector("[data-deal-merchant]").textContent = deal.merchant_name || "";
     document.querySelector("[data-deal-description]").textContent = deal.description;
     document.querySelector("[data-deal-price]").textContent = formatMoney(deal.current_price_cents, deal.currency);
+    var was = document.querySelector("[data-deal-was]");
+    var cut = shopCut(deal);
+    if (was) {
+      was.hidden = !cut;
+      was.textContent = cut ? t("wasPrice") + " " + formatMoney(cut.original, deal.currency) + " · −" + cut.percent + " % " + t("shopCut") : "";
+    }
     var badge = document.querySelector("[data-deal-mode]");
     if (badge) {
       badge.className = "offer-pill is-" + offerMode(deal.offer_mode);
@@ -304,7 +507,9 @@
       badge.hidden = false;
     }
     var estimate = document.querySelector("[data-deal-estimate]");
-    estimate.textContent = offerNote(deal.offer_mode) + " " + t("estimateNote");
+    estimate.textContent = offerMode(deal.offer_mode) === "listing"
+      ? offerNote(deal.offer_mode)
+      : offerNote(deal.offer_mode) + " " + t("estimateNote");
     var media = document.querySelector("[data-deal-media]");
     if (media) media.className = "product-art deal-media is-" + offerMode(deal.offer_mode);
     var image = document.querySelector("[data-deal-image]");
@@ -327,7 +532,7 @@
       setStatus(t("missing"), true);
       return;
     }
-    client().from("public_deals").select("slug,title,description,merchant_name,current_price_cents,currency,cashback_estimate_label,product_image_url,offer_mode").eq("slug", slug).maybeSingle().then(function (result) {
+    client().from("public_deals").select("slug,title,description,merchant_name,current_price_cents,original_price_cents,currency,cashback_estimate_label,product_image_url,offer_mode").eq("slug", slug).maybeSingle().then(function (result) {
       if (result.error) {
         return client().from("public_deals").select("slug,title,description,merchant_name,current_price_cents,currency,cashback_estimate_label,product_image_url").eq("slug", slug).maybeSingle();
       }
@@ -412,7 +617,10 @@
   }
 
   applyI18n();
-  if (page === "deals") loadList();
+  if (page === "deals") {
+    bindFilters();
+    loadList();
+  }
   if (page === "deal") loadDetail();
   if (page === "submit") {
     bindSubmit();

@@ -15,6 +15,8 @@
     return window.bundealSupabase;
   }
 
+  var advertiserAnswers = [];
+
   function requireAdmin() {
     if (!client()) {
       status(lang === "en" ? "Administration is not connected in this public preview." : "Die Verwaltung ist in dieser öffentlichen Vorschau nicht angebunden.", true);
@@ -51,6 +53,21 @@
         select.appendChild(option);
       });
     });
+    var categorySelect = document.querySelector("[data-category-select]");
+    if (categorySelect) {
+      client().from("deal_categories").select("name,slug").order("name").then(function (result) {
+        if (!result.data || !result.data.length) return;
+        var current = categorySelect.value || "allgemein";
+        categorySelect.replaceChildren();
+        result.data.forEach(function (category) {
+          var option = document.createElement("option");
+          option.value = category.slug;
+          option.textContent = category.name;
+          categorySelect.appendChild(option);
+        });
+        categorySelect.value = current;
+      });
+    }
     client().from("deals").select("id,title,slug").eq("status", "published").order("title").then(function (result) {
       dealSelect.replaceChildren();
       (result.data || []).forEach(function (deal) {
@@ -63,9 +80,184 @@
   }
 
   function offerName(value) {
+    if (value === "listing") return lang === "en" ? "Deal" : "Deal";
     if (value === "cashback") return "Cashback";
     if (value === "creator") return "Creator";
     return lang === "en" ? "Referral" : "Empfehlung";
+  }
+
+  function offerChoices() {
+    return ["listing", "cashback", "referral", "creator"];
+  }
+
+  function loadMerchantCapabilities() {
+    var list = document.querySelector("[data-merchant-capabilities]");
+    if (!list) return;
+    client().from("merchants").select("id,name,listing_allowed,affiliate_tracking_allowed,cashback_allowed,referral_reward_allowed,creator_campaign_allowed,deal_creator_reward_allowed,approval_notes").order("name").then(function (result) {
+      list.replaceChildren();
+      (result.data || []).forEach(function (merchant) {
+        var article = document.createElement("article");
+        article.className = "card";
+        var title = document.createElement("h3");
+        title.textContent = merchant.name;
+        var notes = document.createElement("textarea");
+        notes.value = merchant.approval_notes || "";
+        notes.maxLength = 500;
+        var fields = [
+          ["listing_allowed", lang === "en" ? "Normal deal" : "Normaler Deal"],
+          ["affiliate_tracking_allowed", "Tracking"],
+          ["cashback_allowed", "Cashback"],
+          ["referral_reward_allowed", lang === "en" ? "Referral" : "Empfehlung"],
+          ["creator_campaign_allowed", "Creator"],
+          ["deal_creator_reward_allowed", lang === "en" ? "Creator-of-deal note, not paid yet" : "Ersteller-Beteiligung merken, noch keine Auszahlung"]
+        ];
+        var boxes = {};
+        article.appendChild(title);
+        fields.forEach(function (field) {
+          var label = document.createElement("label");
+          var input = document.createElement("input");
+          input.type = "checkbox";
+          input.checked = !!merchant[field[0]];
+          boxes[field[0]] = input;
+          label.appendChild(input);
+          label.appendChild(document.createTextNode(" " + field[1]));
+          article.appendChild(label);
+        });
+        article.appendChild(notes);
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "button button-secondary";
+        button.textContent = lang === "en" ? "Save permissions" : "Freigaben speichern";
+        button.addEventListener("click", function () {
+          client().rpc("set_merchant_capabilities", {
+            p_merchant_id: merchant.id,
+            p_listing_allowed: boxes.listing_allowed.checked,
+            p_affiliate_tracking_allowed: boxes.affiliate_tracking_allowed.checked,
+            p_cashback_allowed: boxes.cashback_allowed.checked,
+            p_referral_reward_allowed: boxes.referral_reward_allowed.checked,
+            p_creator_campaign_allowed: boxes.creator_campaign_allowed.checked,
+            p_deal_creator_reward_allowed: boxes.deal_creator_reward_allowed.checked,
+            p_approval_notes: notes.value.trim() || null
+          }).then(function (response) {
+            status(response.error ? (lang === "en" ? "Permissions were not saved." : "Die Freigaben wurden nicht gespeichert.") : (lang === "en" ? "Permissions saved." : "Freigaben gespeichert."), !!response.error);
+            if (!response.error) loadMerchantCapabilities();
+          });
+        });
+        article.appendChild(button);
+        list.appendChild(article);
+      });
+    });
+  }
+
+  function answerWord(value) {
+    if (value === "yes") return lang === "en" ? "Yes" : "Ja";
+    if (value === "no") return lang === "en" ? "No" : "Nein";
+    return lang === "en" ? "Pending" : "Offen";
+  }
+
+  function checklistItem(text, ok) {
+    var item = document.createElement("li");
+    item.className = ok ? "is-ok" : "is-block";
+    item.textContent = text;
+    return item;
+  }
+
+  function renderPublishChecklist() {
+    var form = document.querySelector("[data-deal-form]");
+    var list = document.querySelector("[data-checklist-items]");
+    if (!form || !list) return;
+    var button = form.querySelector("button[type=submit]");
+    var answer = advertiserAnswers.filter(function (row) {
+      return row.merchant_id === form.merchant_id.value;
+    })[0];
+    var mode = form.offer_mode.value;
+    list.replaceChildren();
+    if (!answer) {
+      list.appendChild(checklistItem(lang === "en"
+        ? "No written answer for this merchant. Purchase is still not possible."
+        : "Keine schriftliche Antwort für diesen Händler. Ein Kauf ist weiter nicht möglich.", true));
+      if (button) button.disabled = false;
+      return;
+    }
+    var needsCashback = mode === "cashback" || mode === "referral" || mode === "creator";
+    var needsReferral = mode === "referral" || mode === "creator";
+    var cashbackOk = !needsCashback || answer.cashback_answer === "yes";
+    var referralOk = !needsReferral || answer.referral_answer === "yes";
+    var confirmed = !!answer.owner_confirmed;
+    list.appendChild(checklistItem((lang === "en" ? "Written cashback: " : "Schriftliches Cashback: ") + answerWord(answer.cashback_answer), cashbackOk));
+    list.appendChild(checklistItem((lang === "en" ? "Written referral: " : "Schriftliche Empfehlung: ") + answerWord(answer.referral_answer), referralOk));
+    list.appendChild(checklistItem(confirmed
+      ? (lang === "en" ? "Partner matrix confirmed." : "Partner-Matrix bestätigt.")
+      : (lang === "en" ? "Partner matrix is not confirmed yet." : "Partner-Matrix ist noch nicht bestätigt."), confirmed));
+    list.appendChild(checklistItem(lang === "en"
+      ? "Purchase is not possible yet. Tracking stays off."
+      : "Kauf noch nicht möglich. Tracking bleibt aus.", true));
+    if (button) button.disabled = !(cashbackOk && referralOk && confirmed);
+  }
+
+  function loadAdvertiserAnswers() {
+    var list = document.querySelector("[data-advertiser-answers]");
+    if (!list || !client()) return;
+    client().from("advertiser_answers").select("merchant_id,cashback_answer,referral_answer,owner_confirmed,source_note").then(function (result) {
+      if (result.error) {
+        status(lang === "en" ? "The written answers could not be loaded." : "Die schriftlichen Antworten konnten nicht geladen werden.", true);
+      }
+      advertiserAnswers = result.data || [];
+      return client().from("merchants").select("id,name").order("name");
+    }).then(function (result) {
+      var names = {};
+      (result.data || []).forEach(function (merchant) {
+        names[merchant.id] = merchant.name;
+      });
+      list.replaceChildren();
+      if (!advertiserAnswers.length) {
+        var empty = document.createElement("p");
+        empty.textContent = lang === "en" ? "No written answer yet." : "Noch keine schriftliche Antwort.";
+        list.appendChild(empty);
+        renderPublishChecklist();
+        return;
+      }
+      advertiserAnswers.slice().sort(function (a, b) {
+        return (names[a.merchant_id] || "").localeCompare(names[b.merchant_id] || "", "de");
+      }).forEach(function (row) {
+        var article = document.createElement("article");
+        article.className = "card";
+        var title = document.createElement("h3");
+        title.textContent = names[row.merchant_id] || "";
+        var cashback = document.createElement("p");
+        cashback.textContent = "Cashback: " + answerWord(row.cashback_answer);
+        var referral = document.createElement("p");
+        referral.textContent = (lang === "en" ? "Referral: " : "Empfehlung: ") + answerWord(row.referral_answer);
+        var note = document.createElement("p");
+        note.className = "fine";
+        note.textContent = row.source_note || "";
+        article.appendChild(title);
+        article.appendChild(cashback);
+        article.appendChild(referral);
+        article.appendChild(note);
+        if (row.owner_confirmed) {
+          var done = document.createElement("p");
+          done.textContent = lang === "en" ? "Matrix confirmed. Purchase is still not possible." : "Matrix bestätigt. Ein Kauf ist weiter nicht möglich.";
+          article.appendChild(done);
+        } else {
+          var button = document.createElement("button");
+          button.type = "button";
+          button.className = "button button-secondary";
+          button.textContent = lang === "en" ? "Confirm matrix" : "Matrix bestätigen";
+          button.addEventListener("click", function () {
+            client().rpc("confirm_advertiser_answer", { p_merchant_id: row.merchant_id }).then(function (response) {
+              status(response.error
+                ? (lang === "en" ? "The matrix was not confirmed." : "Die Matrix wurde nicht bestätigt.")
+                : (lang === "en" ? "Matrix confirmed. Purchase is still not possible." : "Matrix bestätigt. Ein Kauf ist weiter nicht möglich."), !!response.error);
+              if (!response.error) loadAdvertiserAnswers();
+            });
+          });
+          article.appendChild(button);
+        }
+        list.appendChild(article);
+      });
+      renderPublishChecklist();
+    });
   }
 
   function loadOfferModes() {
@@ -85,7 +277,7 @@
         var title = document.createElement("h3");
         title.textContent = row.title;
         var select = document.createElement("select");
-        ["cashback", "referral", "creator"].forEach(function (value) {
+        offerChoices().forEach(function (value) {
           var option = document.createElement("option");
           option.value = value;
           option.textContent = offerName(value);
@@ -101,7 +293,19 @@
             p_deal_id: row.id,
             p_offer_mode: select.value
           }).then(function (response) {
-            status(response.error ? (lang === "en" ? "The type was not saved." : "Die Art wurde nicht gespeichert.") : (lang === "en" ? "Type saved." : "Art gespeichert."), !!response.error);
+            var reason = response.error && response.error.message;
+            var message = !response.error
+              ? (lang === "en" ? "Type saved." : "Art gespeichert.")
+              : reason === "partner matrix not confirmed"
+                ? (lang === "en" ? "The partner matrix is not confirmed yet." : "Die Partner-Matrix ist noch nicht bestätigt.")
+                : reason === "cashback not approved"
+                  ? (lang === "en" ? "Cashback is not approved in writing." : "Cashback ist schriftlich nicht freigegeben.")
+                  : reason === "referral not approved"
+                    ? (lang === "en" ? "A referral is not approved in writing." : "Eine Empfehlung ist schriftlich nicht freigegeben.")
+                    : reason === "offer mode not allowed"
+                      ? (lang === "en" ? "This merchant does not allow that offer type." : "Dieser Händler hat diese Angebotsart nicht freigegeben.")
+                      : (lang === "en" ? "The type was not saved." : "Die Art wurde nicht gespeichert.");
+            status(message, !!response.error);
             if (!response.error) loadOfferModes();
           });
         });
@@ -131,8 +335,8 @@
         url.textContent = row.proposed_url;
         var mode = document.createElement("select");
         mode.innerHTML = lang === "en"
-          ? "<option value=\"cashback\">Cashback</option><option value=\"referral\" selected>Referral</option><option value=\"creator\">Creator</option>"
-          : "<option value=\"cashback\">Cashback</option><option value=\"referral\" selected>Empfehlung</option><option value=\"creator\">Creator</option>";
+          ? "<option value=\"listing\" selected>Deal</option><option value=\"cashback\">Cashback</option><option value=\"referral\">Referral</option><option value=\"creator\">Creator</option>"
+          : "<option value=\"listing\" selected>Deal</option><option value=\"cashback\">Cashback</option><option value=\"referral\">Empfehlung</option><option value=\"creator\">Creator</option>";
         var approve = document.createElement("button");
         approve.type = "button";
         approve.className = "button button-primary";
@@ -345,6 +549,97 @@
     });
   }
 
+  function loadImportRuns() {
+    var list = document.querySelector("[data-import-runs]");
+    if (!list) return;
+    client().from("import_runs").select("environment,status,row_count,ready_count,inserted_count,duplicate_count,unattributed_count,invalid_count,created_at").order("created_at", { ascending: false }).limit(8).then(function (result) {
+      fillCards("[data-import-runs]", result.data || [], function (row) {
+        var article = document.createElement("article");
+        article.className = "card";
+        var title = document.createElement("h3");
+        title.textContent = row.status + " · " + row.environment;
+        var body = document.createElement("p");
+        body.textContent = (lang === "en" ? "Rows " : "Zeilen ") + row.row_count
+          + (lang === "en" ? " · stored " : " · gespeichert ") + row.inserted_count
+          + (lang === "en" ? " · unmatched " : " · ohne Klick ") + row.unattributed_count
+          + (lang === "en" ? " · invalid " : " · ungültig ") + row.invalid_count
+          + " · " + stamp(row.created_at);
+        article.appendChild(title);
+        article.appendChild(body);
+        return article;
+      });
+    });
+  }
+
+  function loadPayoutMarkers() {
+    var list = document.querySelector("[data-payout-markers]");
+    if (!list) return;
+    client().from("payout_markers").select("environment,amount_cents,reference_note,created_at").order("created_at", { ascending: false }).limit(8).then(function (result) {
+      var rows = result.data || [];
+      list.replaceChildren();
+      if (!rows.length) {
+        var empty = document.createElement("p");
+        empty.textContent = lang === "en" ? "No payout recorded. Nothing is transferred from here." : "Keine Auszahlung erfasst. Von hier wird nichts überwiesen.";
+        list.appendChild(empty);
+        return;
+      }
+      rows.forEach(function (row) {
+        var article = document.createElement("article");
+        article.className = "card";
+        var title = document.createElement("h3");
+        title.textContent = row.environment + " · " + euros(row.amount_cents);
+        var body = document.createElement("p");
+        body.textContent = row.reference_note + " · " + stamp(row.created_at);
+        article.appendChild(title);
+        article.appendChild(body);
+        list.appendChild(article);
+      });
+    });
+  }
+
+  function loadCommunityQueue() {
+    var list = document.querySelector("[data-community-queue]");
+    if (!list || !client()) return;
+    client().rpc("community_queue").then(function (result) {
+      var rows = result.data || [];
+      list.replaceChildren();
+      if (!rows.length) {
+        var empty = document.createElement("p");
+        empty.textContent = lang === "en" ? "No comment is waiting." : "Kein Kommentar wartet.";
+        list.appendChild(empty);
+        return;
+      }
+      rows.forEach(function (row) {
+        var article = document.createElement("article");
+        article.className = "card";
+        var title = document.createElement("h3");
+        title.textContent = row.deal_title + " · " + row.status;
+        var author = document.createElement("p");
+        author.textContent = row.author || "";
+        var body = document.createElement("p");
+        body.textContent = row.body || "";
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "button button-secondary";
+        var next = row.status === "hidden" ? "visible" : "hidden";
+        button.textContent = next === "hidden"
+          ? (lang === "en" ? "Hide" : "Ausblenden")
+          : (lang === "en" ? "Show again" : "Wieder zeigen");
+        button.addEventListener("click", function () {
+          client().rpc("moderate_deal_comment", { p_comment_id: row.id, p_status: next }).then(function (response) {
+            status(response.error ? (lang === "en" ? "The comment was not changed." : "Der Kommentar wurde nicht geändert.") : (lang === "en" ? "Comment updated." : "Kommentar geändert."), !!response.error);
+            if (!response.error) loadCommunityQueue();
+          });
+        });
+        article.appendChild(title);
+        article.appendChild(author);
+        article.appendChild(body);
+        article.appendChild(button);
+        list.appendChild(article);
+      });
+    });
+  }
+
   function loadOperations() {
     if (!document.querySelector("[data-admin-rounds]")) return;
     client().rpc("admin_operations_snapshot").then(function (result) {
@@ -461,6 +756,8 @@
           });
         }
       }
+      loadImportRuns();
+      loadPayoutMarkers();
       fillCards("[data-admin-audit]", data.audit || [], function (row) {
         var article = document.createElement("article");
         article.className = "card";
@@ -546,6 +843,9 @@
   requireAdmin().then(function (allowed) {
     if (!allowed) return;
     loadMerchants();
+    loadMerchantCapabilities();
+    loadAdvertiserAnswers();
+    loadCommunityQueue();
     loadOfferModes();
     loadSubmissions();
     loadCashback();
@@ -564,28 +864,60 @@
         if (!result.error) {
           form.reset();
           loadMerchants();
+          loadMerchantCapabilities();
         }
       });
     });
-    document.querySelector("[data-deal-form]").addEventListener("submit", function (event) {
+    var dealForm = document.querySelector("[data-deal-form]");
+    dealForm.merchant_id.addEventListener("change", renderPublishChecklist);
+    dealForm.offer_mode.addEventListener("change", renderPublishChecklist);
+    renderPublishChecklist();
+    dealForm.addEventListener("submit", function (event) {
       event.preventDefault();
       var form = event.currentTarget;
+      var image = form.image.value.trim();
+      var price = Number(form.price.value);
+      var originalText = form.original_price.value.trim();
+      var original = originalText ? Number(originalText) : null;
+      if (image && (image.length < 12 || image.length > 1000 || !/^https:\/\/[^\s<>"'\\@#]+$/.test(image))) {
+        status(lang === "en" ? "The image address must be https." : "Die Bildadresse muss https sein.", true);
+        return;
+      }
+      if (originalText && (!Number.isInteger(original) || original < price)) {
+        status(lang === "en" ? "The previous shop price must be at least the current price." : "Der vorherige Shop-Preis muss mindestens der aktuelle Preis sein.", true);
+        return;
+      }
       client().rpc("create_published_deal", {
         p_merchant_id: form.merchant_id.value,
-        p_category_slug: "allgemein",
+        p_category_slug: form.category_slug.value,
         p_slug: form.slug.value.trim(),
         p_title: form.title.value.trim(),
         p_description: form.description.value.trim(),
-        p_price_cents: Number(form.price.value),
+        p_price_cents: price,
         p_currency: "EUR",
-        p_image_url: form.image.value.trim() || null,
-        p_offer_mode: form.offer_mode.value
+        p_image_url: image || null,
+        p_offer_mode: form.offer_mode.value,
+        p_original_price_cents: original
       }).then(function (result) {
-        status(result.error ? (lang === "en" ? "Deal was not published." : "Der Deal wurde nicht veröffentlicht.") : (lang === "en" ? "Deal published." : "Deal veröffentlicht."), !!result.error);
+        var reason = result.error && result.error.message;
+        var saved = !result.error;
+        var message = saved
+          ? (lang === "en" ? "Deal published. Purchase is still not possible." : "Deal veröffentlicht. Ein Kauf ist weiter nicht möglich.")
+          : reason === "partner matrix not confirmed"
+            ? (lang === "en" ? "The partner matrix is not confirmed yet." : "Die Partner-Matrix ist noch nicht bestätigt.")
+            : reason === "cashback not approved"
+              ? (lang === "en" ? "Cashback is not approved in writing." : "Cashback ist schriftlich nicht freigegeben.")
+              : reason === "referral not approved"
+                ? (lang === "en" ? "A referral is not approved in writing." : "Eine Empfehlung ist schriftlich nicht freigegeben.")
+                : reason === "offer mode not allowed"
+                  ? (lang === "en" ? "This merchant does not allow that offer type." : "Dieser Händler hat diese Angebotsart nicht freigegeben.")
+                  : (lang === "en" ? "Deal was not published." : "Der Deal wurde nicht veröffentlicht.");
+        status(message, !saved);
         if (!result.error) {
           form.reset();
           loadMerchants();
           loadOfferModes();
+          renderPublishChecklist();
         }
       });
     });
@@ -619,6 +951,30 @@
       }).then(function (result) {
         status(result.error ? (lang === "en" ? "Import failed." : "Der Import ist fehlgeschlagen.") : JSON.stringify(result.data), !!result.error);
         if (!result.error) loadCashback();
+      });
+    });
+    var awinForm = document.querySelector("[data-awin-form]");
+    if (awinForm) awinForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      client().rpc("import_awin_rows", {
+        p_rows: [
+          { id: "awin-1001", clickRef: "sampleclick0001", commissionStatus: "approved", commissionAmount: "10.50", saleAmount: "100.00", currency: "EUR", transactionDate: "2026-11-02T10:00:00Z" },
+          { id: "awin-1002", clickRef: "sampleclick0002", commissionStatus: "pending", commissionAmount: "2.00", saleAmount: "20.00", currency: "EUR", transactionDate: "2026-11-03T10:00:00Z" },
+          { id: "awin-1003", clickRef: "sampleclick0003", commissionStatus: "bonus", commissionAmount: "1.00", saleAmount: "5.00", currency: "EUR", transactionDate: "2026-11-04T10:00:00Z" }
+        ],
+        p_environment: "simulation",
+        p_apply: false,
+        p_account_reference: "dev"
+      }).then(function (result) {
+        if (result.error) {
+          status(lang === "en" ? "The Awin dry-run failed." : "Der Awin-Probelauf ist fehlgeschlagen.", true);
+          return;
+        }
+        var data = result.data || {};
+        status((lang === "en" ? "Dry-run only. Unmatched " : "Nur Probelauf. Ohne Klick ") + (data.unattributed_count || 0)
+          + (lang === "en" ? ", invalid " : ", ungültig ") + (data.invalid_count || 0)
+          + (lang === "en" ? ". Nothing was booked." : ". Nichts wurde gebucht."), false);
+        loadImportRuns();
       });
     });
     document.querySelector("[data-rule-form]").addEventListener("submit", function (event) {

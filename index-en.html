@@ -7,10 +7,11 @@
   <title>BunDeal – Offers</title>
   <meta name="description" content="BunDeal shows offers with cashback, a referral, or a creator campaign.">
   <link rel="icon" href="assets/logo-icon.png" type="image/png">
-  <link rel="stylesheet" href="css/styles.css?v=18">
+  <link rel="stylesheet" href="css/styles.css?v=22">
 </head>
 <body data-page="deals">
   <a class="skip" href="#inhalt">Skip to content</a>
+  <div class="proto" data-i18n="proto">Purchase is not possible yet. The offers are examples, and no payout is enabled.</div>
   <header class="site-header">
     <div class="wrap header-inner">
       <a class="brand" href="index-en.html"><img src="assets/logo.svg?v=4" alt="BunDeal, Save more together."></a>
@@ -37,6 +38,11 @@
         <p class="lead">The merchant price is the shop price. Cashback is a later BunDeal payment from confirmed commission.</p>
         <div class="offer-legend">
           <article>
+            <span class="offer-pill is-listing">Deal</span>
+            <h2>Price only</h2>
+            <p>No cashback. The price is the shop price.</p>
+          </article>
+          <article>
             <span class="offer-pill is-cashback">Cashback</span>
             <h2>Buyer only</h2>
             <p>Cashback from confirmed commission. No personal referral link.</p>
@@ -56,6 +62,22 @@
     </section>
     <section>
       <div class="wrap">
+        <form class="deal-filters" data-deal-filters>
+          <label>Search <input type="search" data-deal-search placeholder="Title or merchant"></label>
+          <div class="chip-row" data-category-chips></div>
+          <div class="filter-row">
+            <label>Type
+              <select data-mode-filter>
+                <option value="">All</option>
+                <option value="listing">Deal</option>
+                <option value="cashback">Cashback</option>
+                <option value="referral">Referral</option>
+                <option value="creator">Creator</option>
+              </select>
+            </label>
+            <label>Merchant <select data-merchant-filter><option value="">All</option></select></label>
+          </div>
+        </form>
         <div class="deal-grid" data-deal-list></div>
         <p class="status" data-deal-status role="status"></p>
       </div>
@@ -78,7 +100,7 @@
   <script src="js/config.js"></script>
   <script src="js/supabase-client.js"></script>
   <script src="js/utils.js"></script>
-  <script src="js/deals.js?v=7"></script>
+  <script src="js/deals.js?v=11"></script>
   <script src="js/account-menu.js?v=2"></script>
   <script src="js/site.js"></script>
 </body>

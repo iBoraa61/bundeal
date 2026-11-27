@@ -6,10 +6,11 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Deal – BunDeal</title>
   <link rel="icon" href="assets/logo-icon.png" type="image/png">
-  <link rel="stylesheet" href="css/styles.css?v=18">
+  <link rel="stylesheet" href="css/styles.css?v=22">
 </head>
 <body data-page="deal">
   <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <div class="proto" data-i18n="proto">Kauf noch nicht möglich. Die Angebote sind Beispiele, eine Auszahlung ist nicht freigeschaltet.</div>
   <header class="site-header">
     <div class="wrap header-inner">
       <a class="brand" href="index.html"><img src="assets/logo.svg?v=4" alt="BunDeal, Gemeinsam mehr sparen."></a>
@@ -39,12 +40,28 @@
         <h1 data-deal-title>Deal</h1>
         <p class="fine" data-i18n="priceLabel">Du zahlst beim Händler</p>
         <p class="amount" data-deal-price></p>
+        <p class="deal-was" data-deal-was hidden></p>
         <p data-deal-description></p>
         <p class="fine" data-deal-estimate data-i18n="estimateNote">Cashback entsteht erst aus bestätigter Provision. Ein angezeigter Schätzwert ist kein Versprechen.</p>
         <div class="actions">
           <button class="button button-primary" type="button" data-merchant-click data-i18n="buy">Zum Händler</button>
         </div>
         <div class="notice" data-referral-box></div>
+        <section class="community" data-community>
+          <h2>Temperatur</h2>
+          <p data-temperature>Temperatur 0</p>
+          <div class="actions">
+            <button class="button button-secondary" type="button" data-vote="1">Hoch</button>
+            <button class="button button-secondary" type="button" data-vote="-1">Runter</button>
+            <button class="button button-secondary" type="button" data-favorite>Merken</button>
+          </div>
+          <h2>Kommentare</h2>
+          <div data-comments></div>
+          <form data-comment-form>
+            <label>Kommentar <textarea name="body" maxlength="400" required></textarea></label>
+            <button class="button button-secondary" type="submit">Kommentar speichern</button>
+          </form>
+        </section>
         <p class="status" data-deal-status role="status"></p>
       </div>
     </div>
@@ -54,9 +71,10 @@
   <script src="js/config.js"></script>
   <script src="js/supabase-client.js"></script>
   <script src="js/utils.js"></script>
-  <script src="js/deals.js?v=7"></script>
+  <script src="js/deals.js?v=11"></script>
+  <script src="js/community.js?v=1"></script>
   <script src="js/tracking.js"></script>
-  <script src="js/referrals.js"></script>
+  <script src="js/referrals.js?v=2"></script>
   <script src="js/account-menu.js?v=2"></script>
   <script src="js/site.js"></script>
 </body>

@@ -26,6 +26,7 @@ begin
   execute 'set local role authenticated';
 
   merchant_id := public.create_merchant('Beispielhaendler', 'beispielhaendler', 'https://example.com');
+  perform public.set_merchant_capabilities(merchant_id, true, true, true, true, true, false, null);
   deal_id := public.create_published_deal(merchant_id, 'allgemein', 'beispiel-deal', 'Beispielprodukt', 'Ein ausreichend langer Beschreibungstext.', 10000, 'EUR', null);
 
   execute 'set local role anon';

@@ -7,10 +7,11 @@
   <title>BunDeal – Angebote</title>
   <meta name="description" content="BunDeal zeigt Angebote mit Cashback, Empfehlung oder Creator-Kampagne.">
   <link rel="icon" href="assets/logo-icon.png" type="image/png">
-  <link rel="stylesheet" href="css/styles.css?v=18">
+  <link rel="stylesheet" href="css/styles.css?v=22">
 </head>
 <body data-page="deals">
   <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <div class="proto" data-i18n="proto">Kauf noch nicht möglich. Die Angebote sind Beispiele, eine Auszahlung ist nicht freigeschaltet.</div>
   <header class="site-header">
     <div class="wrap header-inner">
       <a class="brand" href="index.html"><img src="assets/logo.svg?v=4" alt="BunDeal, Gemeinsam mehr sparen."></a>
@@ -37,6 +38,11 @@
         <p class="lead" data-i18n="listLead">Der Händlerpreis ist der Preis im Shop. Cashback ist eine spätere Zahlung von BunDeal aus bestätigter Provision.</p>
         <div class="offer-legend">
           <article>
+            <span class="offer-pill is-listing">Deal</span>
+            <h2>Nur der Preis</h2>
+            <p>Kein Cashback. Der Preis ist der Preis im Shop.</p>
+          </article>
+          <article>
             <span class="offer-pill is-cashback">Cashback</span>
             <h2>Nur der Käufer</h2>
             <p>Cashback aus bestätigter Provision. Kein persönlicher Empfehlungslink.</p>
@@ -56,6 +62,22 @@
     </section>
     <section>
       <div class="wrap">
+        <form class="deal-filters" data-deal-filters>
+          <label>Suche <input type="search" data-deal-search placeholder="Titel oder Händler"></label>
+          <div class="chip-row" data-category-chips></div>
+          <div class="filter-row">
+            <label>Art
+              <select data-mode-filter>
+                <option value="">Alle</option>
+                <option value="listing">Deal</option>
+                <option value="cashback">Cashback</option>
+                <option value="referral">Empfehlung</option>
+                <option value="creator">Creator</option>
+              </select>
+            </label>
+            <label>Händler <select data-merchant-filter><option value="">Alle</option></select></label>
+          </div>
+        </form>
         <div class="deal-grid" data-deal-list></div>
         <p class="status" data-deal-status role="status"></p>
       </div>
@@ -78,7 +100,7 @@
   <script src="js/config.js"></script>
   <script src="js/supabase-client.js"></script>
   <script src="js/utils.js"></script>
-  <script src="js/deals.js?v=7"></script>
+  <script src="js/deals.js?v=11"></script>
   <script src="js/account-menu.js?v=2"></script>
   <script src="js/site.js"></script>
 </body>

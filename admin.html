@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Verwaltung – BunDeal</title>
   <link rel="icon" href="assets/logo-icon.png" type="image/png">
-  <link rel="stylesheet" href="css/styles.css?v=16">
+  <link rel="stylesheet" href="css/styles.css?v=22">
 </head>
 <body data-page="admin">
   <a class="skip" href="#inhalt">Zum Inhalt</a>
@@ -51,6 +51,16 @@
               <label>Website <input name="website" type="url" required></label>
               <button class="button button-primary" type="submit">Händler speichern</button>
             </form>
+            <div>
+              <h2>Freigaben</h2>
+              <p class="fine">Ein neues Programm startet ohne Cashback, Empfehlung und Creator. Die Ersteller-Beteiligung wird nur gemerkt und noch nicht ausgezahlt.</p>
+              <div class="grid-2" data-merchant-capabilities></div>
+            </div>
+            <div>
+              <h2>Schriftliche Antworten</h2>
+              <p class="fine">Cashback und Empfehlung gelten nur bei einem schriftlichen Ja. Offen ist kein Ja. Die Matrix veröffentlicht nichts, solange du sie nicht bestätigst. Tracking und ein Kauf bleiben aus.</p>
+              <div class="grid-2" data-advertiser-answers></div>
+            </div>
           </section>
           <section class="admin-panel" data-admin-panel="deals">
             <form class="suggestion-form" data-deal-form>
@@ -59,16 +69,23 @@
               <label>Slug <input name="slug" required></label>
               <label>Titel <input name="title" required></label>
               <label>Beschreibung <textarea name="description" required minlength="10"></textarea></label>
+              <label>Kategorie <select name="category_slug" data-category-select required><option value="allgemein">Allgemein</option></select></label>
               <label>Preis in Cent <input name="price" inputmode="numeric" required></label>
-              <label>Bild-URL, optional <input name="image" type="url"></label>
+              <label>Vorheriger Shop-Preis in Cent, optional <input name="original_price" inputmode="numeric"></label>
+              <label>Bild-URL, optional, nur https <input name="image" type="url" inputmode="url"></label>
               <label>Art
                 <select name="offer_mode" required>
+                  <option value="listing" selected>Deal</option>
                   <option value="cashback">Cashback</option>
-                  <option value="referral" selected>Empfehlung</option>
+                  <option value="referral">Empfehlung</option>
                   <option value="creator">Creator</option>
                 </select>
               </label>
-              <p class="fine">Cashback ist nur der Käufer. Empfehlung ergänzt den persönlichen Link. Creator ergänzt darauf eine Kampagne.</p>
+              <div class="publish-checklist" data-publish-checklist>
+                <h3>Checkliste</h3>
+                <ul data-checklist-items></ul>
+              </div>
+              <p class="fine">Deal zeigt nur den Händlerpreis. Der vorherige Preis ist der alte Shop-Preis, kein Cashback. Ein Kauf ist weiter nicht möglich.</p>
               <button class="button button-primary" type="submit">Veröffentlichen</button>
             </form>
             <div>
@@ -78,6 +95,11 @@
             <div>
               <h2>Offene Vorschläge</h2>
               <div class="grid-2" data-submission-list></div>
+            </div>
+            <div>
+              <h2>Kommentare</h2>
+              <p class="fine">Eine Meldung nimmt den Kommentar aus der öffentlichen Liste. Ausblenden lässt ihn aus. Ein Kauf entsteht dadurch nicht.</p>
+              <div class="grid-2" data-community-queue></div>
             </div>
           </section>
           <section class="admin-panel" data-admin-panel="tracking">
@@ -101,6 +123,11 @@
               <h2>Simulationsimport</h2>
               <label>Ereignisse als JSON-Liste <textarea name="events" rows="6" required></textarea></label>
               <button class="button button-secondary" type="submit">Simulation importieren</button>
+            </form>
+            <form class="suggestion-form" data-awin-form>
+              <h2>Awin-Probelauf</h2>
+              <p class="fine">Die Beispieldatei wird nur gezählt. Es entsteht kein Live-Kauf und keine Buchung. Zugangsdaten bleiben außerhalb des Browsers.</p>
+              <button class="button button-secondary" type="submit">Probelauf starten</button>
             </form>
           </section>
           <section class="admin-panel" data-admin-panel="cashback" data-cashback-admin>
@@ -151,6 +178,8 @@
               <h2>Affiliate-Ereignisse</h2>
               <p class="fine">Ohne Rohdaten. Live-Importe laufen nicht aus dem Browser.</p>
               <div class="grid-2" data-admin-events></div>
+              <h3>Importläufe</h3>
+              <div class="grid-2" data-import-runs></div>
             </div>
             <div class="ops-panel" data-ops-panel="risks">
               <h2>Risiken</h2>
@@ -158,8 +187,10 @@
             </div>
             <div class="ops-panel" data-ops-panel="payouts">
               <h2>Auszahlungsvorbereitung</h2>
-              <p class="fine">Nur verfügbare Beträge aus geschlossenen Runden. Eine Auszahlung wird hier nicht ausgeführt und nicht gespeichert.</p>
+              <p class="fine">Nur verfügbare Beträge aus geschlossenen Runden. Eine Überweisung wird hier nicht ausgeführt. Live-Auszahlungen sind aus.</p>
               <div class="grid-2" data-admin-payouts></div>
+              <h3>Erfasste Hinweise</h3>
+              <div class="grid-2" data-payout-markers></div>
             </div>
             <div class="ops-panel" data-ops-panel="audit">
               <h2>Prüfprotokoll</h2>
@@ -195,7 +226,7 @@
   <script src="js/config.js"></script>
   <script src="js/supabase-client.js"></script>
   <script src="js/utils.js"></script>
-  <script src="js/admin.js?v=7"></script>
+  <script src="js/admin.js?v=12"></script>
   <script src="js/account-menu.js?v=2"></script>
   <script src="js/site.js"></script>
 </body>
