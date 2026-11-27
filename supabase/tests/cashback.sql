@@ -55,6 +55,7 @@ begin
   perform set_config('request.jwt.claim.role', 'authenticated', true);
   execute 'set local role authenticated';
   merchant_id := public.create_merchant('Cashback Haendler', 'cashback-haendler', 'https://example.com');
+  perform public.set_merchant_capabilities(merchant_id, true, true, true, true, true, false, null);
   main_deal := public.create_published_deal(merchant_id, 'allgemein', 'cashback-deal', 'Cashback Produkt', 'Ein ausreichend langer Beschreibungstext.', 10000, 'EUR', null);
   delay_deal := public.create_published_deal(merchant_id, 'allgemein', 'cashback-delay', 'Spaeter Produkt', 'Ein ausreichend langer Beschreibungstext.', 10000, 'EUR', null);
   live_deal := public.create_published_deal(merchant_id, 'allgemein', 'cashback-live', 'Live Produkt', 'Ein ausreichend langer Beschreibungstext.', 10000, 'EUR', null);

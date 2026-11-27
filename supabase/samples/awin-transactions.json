@@ -1,0 +1,29 @@
+[
+  {
+    "id": "awin-1001",
+    "clickRef": "sampleclick0001",
+    "commissionStatus": "approved",
+    "commissionAmount": "10.50",
+    "saleAmount": "100.00",
+    "currency": "EUR",
+    "transactionDate": "2026-11-02T10:00:00Z"
+  },
+  {
+    "id": "awin-1002",
+    "clickRef": "sampleclick0002",
+    "commissionStatus": "pending",
+    "commissionAmount": "2.00",
+    "saleAmount": "20.00",
+    "currency": "EUR",
+    "transactionDate": "2026-11-03T10:00:00Z"
+  },
+  {
+    "id": "awin-1003",
+    "clickRef": "sampleclick0003",
+    "commissionStatus": "bonus",
+    "commissionAmount": "1.00",
+    "saleAmount": "5.00",
+    "currency": "EUR",
+    "transactionDate": "2026-11-04T10:00:00Z"
+  }
+]

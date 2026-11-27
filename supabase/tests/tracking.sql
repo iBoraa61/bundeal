@@ -37,6 +37,7 @@ begin
   perform set_config('request.jwt.claim.role', 'authenticated', true);
   execute 'set local role authenticated';
   merchant_id := public.create_merchant('Beispielhaendler', 'tracking-haendler', 'https://example.com');
+  perform public.set_merchant_capabilities(merchant_id, true, true, true, true, true, false, null);
   deal_id := public.create_published_deal(merchant_id, 'allgemein', 'tracking-deal', 'Tracking Produkt', 'Ein ausreichend langer Beschreibungstext.', 10000, 'EUR', null);
   perform public.attach_affiliate_link(deal_id, 'webgains', 'dev', 'simulation', stored_url, 'clickref');
 

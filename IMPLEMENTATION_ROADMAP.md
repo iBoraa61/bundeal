@@ -1,441 +1,255 @@
 # BunDeal Implementation Roadmap
 
-Status: Proposed after Phase 0  
-Rule: Every phase ends with a review checkpoint and requires owner approval before the next major phase.
+Status: Phase 0 refresh (2026-11-27)  
+Rule: Every phase ends with an owner checkpoint. Do not start the next major phase without approval.  
+Rule: Do not enable live money, payouts, or `db reset` unless the owner explicitly asks.
 
-## Working method for every phase
+## Working method
 
-At each checkpoint, provide:
+At each checkpoint provide:
 
-1. Objective and completed scope.
-2. Changed and newly created files.
-3. Applied migrations in execution order.
-4. Environment and secret changes without exposing values.
-5. Automated tests and their actual results.
-6. Manual verification steps and observed results.
-7. Security considerations.
-8. Known limitations and unresolved decisions.
-9. Rollback or recovery notes.
-10. Approval request for the next phase.
+1. Objective and completed scope  
+2. Changed files  
+3. Migrations applied (in order)  
+4. Tests run and results  
+5. Manual browser checks  
+6. Security notes  
+7. Open decisions  
+8. Approval request for the next phase  
 
-Do not report a command or migration as successful unless it was executed and verified.
+Do not mark a command successful unless it was executed.
 
-## Phase 0 — Audit and architecture
+## Progress map (honest)
 
-### Objective
+| Roadmap id | Name | State |
+| --- | --- | --- |
+| 0 | Audit / architecture | **This refresh — awaiting approval** |
+| 1 | Technical foundation | Done (local Supabase, RLS, config pattern) |
+| 2 | Auth / profiles / roles | Done |
+| 3 | Deals / submissions / publish | Done |
+| 4 | Direct referral | Done |
+| 5 | Clickref / import / rounds | Done |
+| 6 | Cashback ledger | Done (simulation) |
+| 7 | Creator campaigns + role | Done |
+| 8 | Dashboards | Done (user + admin ops listing) |
+| 9 | Pilot review | Done — **Live money No-Go** (`PILOT.md`) |
+| A | Storefront + offer modes | Done locally and published to Pages |
+| L1+ | Live product completion | **Not started — see below** |
 
-Understand the current project and define a safe target before backend work.
+The original phases 1–9 are complete for a **simulation platform**. The work below is the remaining path toward a **real live product**, not a redo of phases 1–9.
+
+---
+
+## Phase 0 — Audit refresh (current)
 
 ### Deliverables
 
 - `PROJECT_AUDIT.md`
 - `ARCHITECTURE.md`
 - `IMPLEMENTATION_ROADMAP.md`
-- GitHub branch `feature/bundeal-backend`
-
-### Current result
-
-- Frontend and presentation sources audited.
-- Target architecture and schema proposed.
-- Security and deployment risks documented.
-- Live repository identified as `iBoraa61/bundeal`.
-- Branch `feature/bundeal-backend` created from `main`.
-- Phase 0 documents committed to the feature branch.
-- Repository layout confirmed: GitHub Pages serves the repository root through `CNAME` `bundeal.de`.
-- Partner files remain outside this repository.
+- `LIVE_READINESS_CHECKLIST.md`
 
 ### Approval gate
 
-- Confirm architecture and root-level file layout.
-- Resolve open attribution rules.
-- Create a separate Supabase development project.
+Confirm:
 
-## Phase 1 — Technical foundation
+1. Keep static HTML + Supabase (no framework rewrite).  
+2. Keep unpaid suggestions by default; deal-creator reward stays off until a later yes.  
+3. Add `listing` (normal deal) as the next mode after Cashback / Empfehlung / Creator.  
+4. Per-merchant capability flags before flexible public rates.  
+5. Live purchase stays off until the live checklist is green.  
+
+**Stop here until the owner approves.**
+
+---
+
+## Phase L1 — Merchant capabilities and listing deals
 
 ### Objective
 
-Create a reproducible, non-production Supabase foundation without changing the public product behavior.
-
-### Files expected
-
-- `.gitignore`
-- `.env.example`
-- `README.md`
-- `supabase/config.toml`
-- `supabase/migrations/<timestamp>_foundation.sql`
-- `supabase/migrations/<timestamp>_rls_helpers.sql`
-- `supabase/seed.sql`
-- `supabase/tests/foundation.sql`
-- `js/config.example.js`
-- `js/config.js` or generated equivalent
-- `js/supabase-client.js`
+Make the mixed system real at the data model: every merchant/program has explicit flags; deals can be normal listings without cashback claims.
 
 ### Scope
 
-- Connect the correct Git repository.
-- Create and use `feature/bundeal-backend`.
-- Configure Supabase CLI and local workflow.
-- Connect only the dedicated development Supabase project.
-- Create foundational enums/domains or check constraints.
-- Create identity, role, merchant, category and audit foundations.
-- Enable RLS immediately.
-- Add safe public configuration.
-- Document development and deployment commands.
+- Admin-managed capability flags (cashback, referral, creator, listing, tracking)
+- Approval notes / date fields
+- New `offer_mode = listing` (or equivalent) with UI that promises no cashback
+- Publish/review flows refuse modes the merchant does not allow
+- Keep existing 35/15/50 default rule versions unchanged unless a new version is published
+
+### Out of scope
+
+- Deal-creator reward ledger  
+- Flexible arbitrary rate UI for every deal  
+- Community votes/comments  
 
 ### Tests
 
-- Fresh local database reset from migrations.
-- Seed execution.
-- Anonymous access denied to protected tables.
-- User cannot assign a role.
-- Public deal-safe views expose no secrets.
-- No service key exists in frontend files or Git history.
-
-### Manual verification
-
-- Existing German and English static pages still work.
-- Development Supabase project is clearly labelled and separate.
-- Public frontend can initialize the Supabase client without privileged access.
+- Cashback-only merchant cannot publish `referral` / `creator`  
+- Listing deal never creates referral attribution or cashback estimate promise  
+- Existing kopfhoerer referral behaviour still works  
 
 ### Approval gate
 
-Review every migration, RLS helper, environment variable name and test result before authentication work.
+Owner reviews admin UX and public listing card copy.
 
-## Phase 2 — Authentication and profiles
+---
+
+## Phase L2 — Storefront depth (Mydealz-style cards without fake money)
 
 ### Objective
 
-Implement secure user registration and account sessions.
-
-### Files expected
-
-- `login.html`
-- `register.html`
-- `reset-password.html`
-- `dashboard.html`
-- `js/auth.js`
-- `js/utils.js`
-- `supabase/migrations/<timestamp>_profiles_and_roles.sql`
-- `supabase/migrations/<timestamp>_profile_rls.sql`
-- authentication tests
+Richer deal feed and detail without implying payouts.
 
 ### Scope
 
-- Registration.
-- Email verification according to development settings.
-- Login and logout.
-- Password reset.
-- Session persistence.
-- Profile creation trigger.
-- Immutable server-generated referral code.
-- Protected dashboard shell.
-- User/admin role separation.
+- Search and basic filters (category, mode, merchant)
+- Optional old price + computed % off when `original_price_cents` is set
+- Stronger empty and loading states
+- Category chips
+- Image upload path or strict HTTPS image URL validation (Storage optional)
 
-### Tests
+### Out of scope
 
-- Registration and profile creation.
-- Duplicate username and referral-code protection.
-- User can read/update only permitted own profile fields.
-- User cannot read another private profile.
-- User cannot create or modify `admin` role.
-- Password reset callback returns to an allowlisted URL.
+- Votes/comments  
+- Live Awin API  
 
 ### Approval gate
 
-Inspect auth flows, RLS policies, role protection and browser storage behavior.
+Mobile + desktop review of feed and detail.
 
-## Phase 3 — Deal management
+---
+
+## Phase L3 — Wire approved partners (still no live money)
 
 ### Objective
 
-Replace hardcoded deal content with reviewed database-backed deals while preserving the current design.
-
-### Files expected
-
-- `deals.html`
-- `deal.html`
-- `submit-deal.html`
-- `admin.html` moderation section
-- `js/deals.js`
-- `js/admin.js`
-- deal/merchant/category/submission migrations
-- deal RLS tests
+Store real advertiser decisions and prepare offers without enabling purchase.
 
 ### Scope
 
-- Merchants and categories.
-- Public published deal list.
-- Public deal detail.
-- User submission.
-- Editing own pending submission.
-- Admin review, rejection and publication.
-- Safe product image handling.
-
-### Tests
-
-- Anonymous users see only published deals.
-- Users cannot publish directly.
-- Users can edit only their own pending submissions.
-- Published deal records cannot expose raw secrets.
-- Admin actions are authorized and audited.
-- User-provided content is rendered safely.
+- Record written answers per merchant/program (cashback yes/no, referral yes/no)
+- Map known answers (examples from outreach: Finanzguru cashback-only; 123.live cashback-only; Guiders cashback GO pending referral; Wondershare both)
+- Admin checklist before flipping a deal from draft/simulation to public listing
+- Public copy remains “Kauf noch nicht möglich” until L6
 
 ### Approval gate
 
-Review public fields, moderation flow, image policy and current UI parity.
+Owner confirms partner matrix accuracy.
 
-## Phase 4 — Referral attribution
+---
+
+## Phase L4 — Community layer (optional before money)
 
 ### Objective
 
-Implement direct-only referral links with documented attribution behavior and no financial reward yet.
-
-### Required owner decisions before implementation
-
-- Attribution duration.
-- First-click or last-click precedence.
-- Whether referrer eligibility requires a confirmed purchase.
-- Whether referral attribution can be replaced before purchase.
-- Cross-device behavior.
-
-### Files expected
-
-- `js/referrals.js`
-- `supabase/functions/resolve-referral/` or consolidated redirect function
-- referral and attribution migrations
-- referral security tests
-- attribution decision record in documentation
+Add engagement only if owner wants traffic mechanics before first paid offer.
 
 ### Scope
 
-- Personal referral links.
-- Opaque referral-code resolution.
-- Direct referral attribution.
-- Self-referral prevention.
-- Referral statistics.
-- Risk-event recording.
-- No multi-level commission.
+- Votes / temperature  
+- Comments + report  
+- Favorites  
+- Moderation in admin  
 
-### Tests
+### Risk
 
-- Self-referral rejected.
-- Second-level relationship creates no upstream entitlement.
-- Invalid and expired codes handled safely.
-- Attribution precedence follows the approved rule.
-- Referral clicks alone create no financial entries.
+Spam and moderation load before revenue. Prefer after first approved live offer if resources are tight.
 
 ### Approval gate
 
-Review attribution examples and fraud cases before affiliate transaction work.
+Explicit owner choice: do L4 now or after L6.
 
-## Phase 5 — Affiliate click and transaction tracking
+---
+
+## Phase L5 — Production affiliate ingestion
 
 ### Objective
 
-Create network-neutral outbound tracking and safe simulation/import flows.
-
-### Files expected
-
-- `js/tracking.js`
-- `supabase/functions/affiliate-redirect/`
-- `supabase/functions/affiliate-webhook/` only if supported
-- `supabase/functions/import-transactions/`
-- affiliate account/link/event/click/transaction migrations
-- sample redacted CSV fixtures
-- idempotency tests
+Replace simulation-only imports for production with a real Awin path.
 
 ### Scope
 
-- Server-generated unique click reference.
-- Validated redirect to an active approved affiliate link.
-- Click logging.
-- Strict simulation/live environment.
-- Simulation event endpoint restricted to development/admin use.
-- CSV fallback importer.
-- Awin adapter shell based only on verified fields.
-- Transaction status updates and returns.
-
-### Tests
-
-- Open redirect attempts rejected.
-- Duplicate external event does not duplicate a transaction.
-- Duplicate transaction ID in the same network account is rejected.
-- Same external ID in a different account is handled according to scoped uniqueness.
-- Frontend cannot create or convert a live transaction.
-- Forged or unsigned webhook rejected where signatures exist.
-- Simulation data cannot affect live records.
+- Document exact Awin fields used (clickref / transaction id / commission / status)
+- Service-role importer or scheduled job
+- Idempotent upsert into `affiliate_events`
+- Monitoring: failed import, unmatched clicks, open risks
+- Never process live from the public browser
 
 ### Approval gate
 
-Review approved Awin capabilities, mapping fixtures, stored raw data and redaction.
+Dry-run against sample Awin export in simulation, then production credentials in env only.
 
-## Phase 6 — Cashback engine and deal rounds
+---
+
+## Phase L6 — Live money readiness
 
 ### Objective
 
-Implement deterministic 35/15/50 allocation, immutable ledger entries, reversals and monthly rounds.
-
-### Required owner decisions before implementation
-
-- Cashback release delay after confirmation.
-- Final treatment of unassigned community allocation.
-- Round closure timing and late-arriving transaction handling.
-- Currency scope for pilot.
-
-### Files expected
-
-- `supabase/functions/process-commission/`
-- `supabase/functions/reverse-commission/`
-- commission-rule, commission, round, account, ledger and community-allocation migrations
-- SQL reconciliation views
-- financial unit and integration tests
+Enable confirmed-commission booking in `live` only after checklist green.
 
 ### Scope
 
-- Versioned 35/15/50 rule.
-- Integer-cent calculation.
-- Explicit rounding adjustment.
-- Pending and available ledger states.
-- Unassigned 15% community allocation.
-- Atomic balance projection.
-- Rejection handling.
-- Compensating reversal entries.
-- Round opening and closure.
-
-### Tests
-
-- €10.00 produces €3.50 / €1.50 / €5.00.
-- Odd-cent amounts reconcile exactly.
-- No eligible referrer creates a community allocation, not extra BunDeal revenue.
-- Reprocessing the same transaction creates no duplicate credit.
-- Full and partial reversals reconcile.
-- Closed rounds reject silent new assignment.
-- Concurrent processing cannot double-credit.
-- Simulation entries never affect live projections.
+- Publish 30-day (or counsel-approved) cashback policy version  
+- Production Supabase project, backups, restore drill  
+- Monitoring / alerting for import + reconciliation  
+- Legal pages and cashback/referral terms reviewed  
+- Explicit owner flip: “purchase possible” copy  
+- Payout remains admin-prepared, not auto-sent, until payment provider + KYC decided  
 
 ### Approval gate
 
-Review calculation fixtures, ledger rows, reconciliation report and reversal behavior line by line.
+`LIVE_READINESS_CHECKLIST.md` all critical items green.
 
-## Phase 7 — User dashboard
+---
+
+## Phase L7 — Payout execution (later)
 
 ### Objective
 
-Expose clear, user-owned account information without weakening financial security.
-
-### Files expected
-
-- `dashboard.html`
-- `css/dashboard.css`
-- `js/cashback.js`
-- dashboard views or RPC migrations
-- dashboard access tests
+Mark and execute payouts.
 
 ### Scope
 
-- Profile.
-- Estimated, pending, confirmed/available and reversed status explanations.
-- Transaction history.
-- Referral statistics.
-- Submitted deals.
-- Account settings.
-
-### Tests
-
-- Users see only their own records.
-- Amount labels match source status.
-- Estimated cashback is never displayed as guaranteed.
-- Reversals remain visible in history.
-- Empty states and network errors are accessible.
+- Payment provider or manual SEPA process  
+- KYC / identity checks as required by counsel  
+- `paid` markers with audit  
+- User-visible payout history  
 
 ### Approval gate
 
-Review dashboard wording, privacy and reconciliation against database values.
+Legal + tax sign-off.
 
-## Phase 8 — Admin dashboard
+---
+
+## Phase L8 — Deal-creator reward (only if still desired)
 
 ### Objective
 
-Provide controlled operational tools without exposing service credentials to the browser.
+Optional share for the user who submitted a deal, when a merchant explicitly allows it.
 
-### Files expected
+### Preconditions
 
-- `admin.html`
-- `css/admin.css`
-- `js/admin.js`
-- admin Edge Function operations
-- admin read models and audit migrations
-- authorization tests
+- Written advertiser yes for this reward  
+- Owner overrides the earlier “unpaid suggestions” product default  
 
 ### Scope
 
-- Deal and submission moderation.
-- User review without arbitrary role escalation.
-- Affiliate event and transaction inspection.
-- Commission and ledger reconciliation.
-- Round control.
-- Risk-event review.
-- Payout-request preparation only.
-- Audit-log access.
+- Capability flag + ledger bucket  
+- No payment for merely submitting; only confirmed commission  
+- Clear UI separation from referral and creator-campaign shares  
 
-### Tests
+---
 
-- Regular users cannot access admin data or operations.
-- Hiding the admin page is not the authorization mechanism.
-- Every privileged mutation is validated and audited.
-- Financial records cannot be manually overwritten.
+## Explicit non-goals until approved
 
-### Approval gate
+- Framework rewrite  
+- Amazon / AliExpress cashback deals  
+- Multi-level referrals  
+- Auto-enabling referral because cashback was allowed  
+- Showing test commissions as real payable money  
+- Pushing secrets to GitHub Pages  
 
-Review each admin capability, required role and audit event.
+## Immediate next step after Phase 0 approval
 
-## Phase 9 — Pilot readiness
-
-### Objective
-
-Prove the complete simulation flow and prepare a controlled live pilot without enabling real payouts prematurely.
-
-### Test scenarios
-
-- Registration and password reset.
-- Profile and referral-code creation.
-- Deal submission, rejection and approval.
-- Referral link and direct attribution.
-- Self-referral rejection.
-- Affiliate redirect and unique click reference.
-- Simulated pending transaction.
-- Confirmation and 35/15/50 allocation.
-- Rejection.
-- Full and partial return.
-- Duplicate and replayed events.
-- Closed monthly round.
-- Unassigned community allocation.
-- User and admin RLS.
-- Simulation/live separation.
-- Ledger/account reconciliation.
-
-### Operational deliverables
-
-- Known-limitations document.
-- Incident and rollback procedure.
-- Backup/restore verification.
-- Secrets inventory.
-- Data retention plan.
-- Monitoring and alert plan.
-- Affiliate approval evidence.
-- Legal/tax review checklist.
-- Go/no-go checklist.
-
-### Pilot restriction
-
-Do not enable real-money payouts until affiliate terms, legal structure, tax treatment, identity requirements, accounting and operational controls are approved.
-
-## Prioritized next actions
-
-1. Obtain the exact GitHub repository URL.
-2. Connect or clone it without overwriting the current prototype.
-3. Create `feature/bundeal-backend` from the deployed default branch.
-4. Review and approve Phase 0 documents.
-5. Decide the open referral-attribution rules.
-6. Create a separate Supabase development project.
-7. Begin Phase 1 only after explicit approval.
+Start **Phase L1** (merchant capabilities + listing deals). Do not jump to community or payouts first.

@@ -7,6 +7,24 @@
   var slug = window.bundealUtils.safeSlug(params.get("slug"));
   if (!slug) return;
 
+  window.bundealSupabase.from("public_deals").select("offer_mode").eq("slug", slug).maybeSingle().then(function (deal) {
+    var mode = deal.data && deal.data.offer_mode;
+    if (mode === "listing") {
+      box.textContent = lang === "en"
+        ? "This offer has no cashback and no personal link."
+        : "Auf diesem Angebot gibt es kein Cashback und keinen persönlichen Link.";
+      return;
+    }
+    if (mode === "cashback") {
+      box.textContent = lang === "en"
+        ? "Buyer cashback only. There is no personal link."
+        : "Nur Käufer-Cashback. Einen persönlichen Link gibt es nicht.";
+      return;
+    }
+    loadReferralLink();
+  });
+
+  function loadReferralLink() {
   window.bundealSupabase.rpc("referral_link_for_deal", { p_deal_slug: slug }).then(function (result) {
     var code = result.data;
     if (result.error || typeof code !== "string" || !/^[a-z0-9]{10}$/.test(code)) {
@@ -39,4 +57,5 @@
       box.appendChild(button);
     });
   });
+  }
 })();
