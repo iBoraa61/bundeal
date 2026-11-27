@@ -15,6 +15,7 @@
       noHitsBody: "Suchbegriff, Kategorie, Art oder Händler ändern.",
       filterSearch: "Suche",
       filterAll: "Alle",
+      filterCategory: "Kategorien",
       filterMode: "Art",
       filterMerchant: "Händler",
       wasPrice: "Vorheriger Shop-Preis",
@@ -72,6 +73,7 @@
       noHitsBody: "Change the search, category, type or merchant.",
       filterSearch: "Search",
       filterAll: "All",
+      filterCategory: "Categories",
       filterMode: "Type",
       filterMerchant: "Merchant",
       wasPrice: "Previous shop price",
@@ -488,29 +490,15 @@
   }
 
   function renderFilters() {
-    var chips = document.querySelector("[data-category-chips]");
-    if (chips) {
-      var seen = {};
-      var categories = [];
-      catalog.forEach(function (deal) {
-        if (!deal.category_slug || seen[deal.category_slug]) return;
-        seen[deal.category_slug] = true;
-        categories.push({ value: deal.category_slug, label: deal.category_name || deal.category_slug });
-      });
-      chips.replaceChildren();
-      [{ value: "", label: t("filterAll") }].concat(categories).forEach(function (category) {
-        var button = document.createElement("button");
-        button.type = "button";
-        button.className = "chip" + (filters.category === category.value ? " is-on" : "");
-        button.textContent = category.label;
-        button.setAttribute("aria-pressed", filters.category === category.value ? "true" : "false");
-        button.addEventListener("click", function () {
-          filters.category = category.value;
-          showFiltered();
-        });
-        chips.appendChild(button);
-      });
-    }
+    var categories = [];
+    var seen = {};
+    catalog.forEach(function (deal) {
+      if (!deal.category_slug || seen[deal.category_slug]) return;
+      seen[deal.category_slug] = true;
+      categories.push({ value: deal.category_slug, label: deal.category_name || deal.category_slug });
+    });
+    categories.sort(function (a, b) { return a.label.localeCompare(b.label, lang); });
+    fillSelect(document.querySelector("[data-category-filter]"), categories, t("filterAll"));
     var merchants = [];
     var seenMerchants = {};
     catalog.forEach(function (deal) {
@@ -531,6 +519,7 @@
 
   function bindFilters() {
     var search = document.querySelector("[data-deal-search]");
+    var category = document.querySelector("[data-category-filter]");
     var mode = document.querySelector("[data-mode-filter]");
     var merchant = document.querySelector("[data-merchant-filter]");
     if (search) {
@@ -542,6 +531,10 @@
         showFiltered();
       });
     }
+    if (category) category.addEventListener("change", function () {
+      filters.category = category.value;
+      showFiltered();
+    });
     if (mode) mode.addEventListener("change", function () {
       filters.mode = mode.value;
       showFiltered();
