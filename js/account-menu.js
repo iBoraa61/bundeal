@@ -5,25 +5,27 @@
   var copy = lang === "en"
     ? {
       account: "Account", logout: "Log out", admin: "Admin", user: "User", creator: "Creator",
-      menu: "Account menu", signIn: "Sign in", manage: "Admin",
-      nav: "Main navigation", toGerman: "Zur deutschen Sprache", toEnglish: "Switch to English"
+      menu: "Account menu", signIn: "Sign in/Register", manage: "Admin",
+      nav: "Main navigation", toGerman: "Zur deutschen Sprache", toEnglish: "Switch to English",
+      openMenu: "Menu", create: "+ Create", search: "Search", searchPlaceholder: "Search deals"
     }
     : {
       account: "Konto", logout: "Abmelden", admin: "Admin", user: "Nutzer", creator: "Creator",
-      menu: "Kontomenü", signIn: "Anmelden", manage: "Verwaltung",
-      nav: "Hauptnavigation", toGerman: "Zur deutschen Sprache", toEnglish: "Switch to English"
+      menu: "Kontomenü", signIn: "Anmelden/Registrieren", manage: "Verwaltung",
+      nav: "Hauptnavigation", toGerman: "Zur deutschen Sprache", toEnglish: "Switch to English",
+      openMenu: "Menü", create: "+ Erstellen", search: "Suche", searchPlaceholder: "Deals suchen"
     };
   var items = lang === "en"
     ? [
       { key: "deals", href: "index-en.html", label: "Deals" },
       { key: "about", href: "about-en.html", label: "What is BunDeal" },
-      { key: "suggest", href: "submit-deal.html?lang=en", label: "Suggest" },
+      { key: "privacy", href: "privacy-en.html", label: "Privacy" },
       { key: "legal", href: "legal-notice-en.html", label: "Legal notice" }
     ]
     : [
       { key: "deals", href: "index.html", label: "Deals" },
       { key: "about", href: "was-ist-bundeal.html", label: "Was ist BunDeal" },
-      { key: "suggest", href: "submit-deal.html", label: "Vorschlag" },
+      { key: "privacy", href: "datenschutz.html", label: "Datenschutz" },
       { key: "legal", href: "impressum.html", label: "Impressum" }
     ];
 
@@ -41,6 +43,7 @@
     if (file === "was-ist-bundeal.html" || file === "about-en.html" || file === "beispiel-take3.html" || file === "example-en.html") return "about";
     if (file === "submit-deal.html") return "suggest";
     if (file === "impressum.html" || file === "legal-notice-en.html") return "legal";
+    if (file === "datenschutz.html" || file === "privacy-en.html") return "privacy";
     return "";
   }
 
@@ -93,37 +96,91 @@
       if (item.key === active) link.setAttribute("aria-current", "page");
       nav.appendChild(link);
     });
+    var language = document.createElement("a");
+    language.className = "language-switch";
+    language.href = languageHref();
+    language.textContent = lang === "en" ? "DE" : "EN";
+    language.lang = lang === "en" ? "de" : "en";
+    language.setAttribute("aria-label", lang === "en" ? copy.toGerman : copy.toEnglish);
+    nav.appendChild(language);
   }
 
-  function languageSwitch() {
-    var controls = document.querySelector(".header-controls");
-    if (!controls) return null;
-    var link = controls.querySelector(".language-switch");
-    if (!link) {
-      link = document.createElement("a");
-      link.className = "language-switch";
-      var toggle = controls.querySelector(".nav-toggle");
-      if (toggle) controls.insertBefore(link, toggle);
-      else controls.appendChild(link);
+  function layoutHeader() {
+    var header = document.querySelector(".site-header");
+    var bar = header && header.querySelector(".header-inner");
+    if (!header || !bar) return;
+    var toggle = header.querySelector(".nav-toggle");
+    var brand = header.querySelector(".brand");
+    var nav = header.querySelector(".site-nav");
+    var search = header.querySelector(".header-search");
+    var actions = header.querySelector(".header-actions");
+    var account = header.querySelector("[data-account-slot]");
+
+    if (!search) {
+      search = document.createElement("form");
+      search.className = "header-search";
+      search.method = "get";
+      search.action = lang === "en" ? "index-en.html" : "index.html";
+      search.setAttribute("role", "search");
     }
-    link.href = languageHref();
-    link.textContent = lang === "en" ? "DE" : "EN";
-    link.lang = lang === "en" ? "de" : "en";
-    link.setAttribute("aria-label", lang === "en" ? copy.toGerman : copy.toEnglish);
-    return link;
+    var input = search.querySelector("input") || document.querySelector("[data-deal-search]");
+    if (!input) {
+      input = document.createElement("input");
+      input.type = "search";
+      input.name = "q";
+    }
+    if (input.parentElement !== search) search.appendChild(input);
+    input.setAttribute("aria-label", copy.search);
+    if (!input.getAttribute("placeholder")) input.placeholder = copy.searchPlaceholder;
+    if (document.body.getAttribute("data-page") === "deals") input.setAttribute("data-deal-search", "");
+
+    if (!actions) {
+      actions = document.createElement("div");
+      actions.className = "header-actions";
+    }
+    if (account && account.parentElement !== actions) actions.insertBefore(account, actions.firstChild);
+    if (!actions.querySelector(".create-button")) {
+      var create = document.createElement("a");
+      create.className = "create-button";
+      create.href = lang === "en" ? "submit-deal.html?lang=en" : "submit-deal.html";
+      create.textContent = copy.create;
+      actions.appendChild(create);
+    }
+
+    if (toggle && !toggle.querySelector(".burger-lines")) {
+      toggle.textContent = "";
+      var lines = document.createElement("span");
+      lines.className = "burger-lines";
+      lines.setAttribute("aria-hidden", "true");
+      var hidden = document.createElement("span");
+      hidden.className = "visually-hidden";
+      hidden.textContent = copy.openMenu;
+      toggle.appendChild(lines);
+      toggle.appendChild(hidden);
+    }
+    if (toggle) toggle.setAttribute("aria-label", copy.openMenu);
+
+    [toggle, brand, search, actions].forEach(function (node) {
+      if (node && node.parentElement !== bar) bar.appendChild(node);
+      else if (node) bar.appendChild(node);
+    });
+    if (nav) header.appendChild(nav);
+    header.querySelectorAll(".language-switch").forEach(function (link) {
+      if (!nav || !nav.contains(link)) link.remove();
+    });
+    var controls = header.querySelector(".header-controls");
+    if (controls && !controls.children.length) controls.remove();
   }
 
   function slot() {
-    var controls = document.querySelector(".header-controls");
-    if (!controls) return null;
-    var existing = controls.querySelector("[data-account-slot]");
+    var existing = document.querySelector("[data-account-slot]");
     if (existing) return existing;
+    var actions = document.querySelector(".header-actions");
+    if (!actions) return null;
     var element = document.createElement("div");
     element.className = "account-slot";
     element.setAttribute("data-account-slot", "");
-    var language = controls.querySelector(".language-switch");
-    var toggle = controls.querySelector(".nav-toggle");
-    controls.insertBefore(element, language || toggle || null);
+    actions.insertBefore(element, actions.querySelector(".create-button"));
     return element;
   }
 
@@ -134,7 +191,8 @@
     var link = document.createElement("a");
     link.className = "account-menu-button";
     link.href = pageUrl("login.html");
-    link.textContent = copy.signIn;
+    link.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 19.2c1.5-3.1 3.9-4.6 7-4.6s5.5 1.5 7 4.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span></span>';
+    link.querySelector("span").textContent = copy.signIn;
     target.appendChild(link);
   }
 
@@ -228,8 +286,8 @@
   }
 
   function refresh() {
+    layoutHeader();
     renderNav();
-    languageSwitch();
     var api = client();
     if (!api) {
       renderSignedOut();

@@ -6,28 +6,32 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Deal – BunDeal</title>
   <link rel="icon" href="assets/logo-icon.png" type="image/png">
-  <link rel="stylesheet" href="css/styles.css?v=22">
+  <link rel="stylesheet" href="css/styles.css?v=25">
 </head>
 <body data-page="deal">
   <a class="skip" href="#inhalt">Zum Inhalt</a>
   <div class="proto" data-i18n="proto">Kauf noch nicht möglich. Die Angebote sind Beispiele, eine Auszahlung ist nicht freigeschaltet.</div>
   <header class="site-header">
     <div class="wrap header-inner">
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menü"><span class="burger-lines" aria-hidden="true"></span><span class="visually-hidden">Menü</span></button>
       <a class="brand" href="index.html"><img src="assets/logo.svg?v=4" alt="BunDeal, Gemeinsam mehr sparen."></a>
-      <div class="header-controls">
-        <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
-          <a href="index.html" aria-current="page">Deals</a>
-          <a href="was-ist-bundeal.html">Was ist BunDeal</a>
-          <a href="submit-deal.html">Vorschlag</a>
-          <a href="impressum.html">Impressum</a>
-        </nav>
+      <form class="header-search" role="search" action="index.html" method="get">
+        <input type="search" name="q" placeholder="Deals suchen" aria-label="Suche">
+      </form>
+      <div class="header-actions">
         <div class="account-slot" data-account-slot>
-          <a class="account-menu-button" href="login.html">Anmelden</a>
+          <a class="account-menu-button" href="login.html">Anmelden/Registrieren</a>
         </div>
-        <a class="language-switch" href="deal.html?lang=en" data-language-switch lang="en">EN</a>
-        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menü</button>
+        <a class="create-button" href="submit-deal.html">+ Erstellen</a>
       </div>
     </div>
+    <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
+      <a href="index.html">Deals</a>
+      <a href="was-ist-bundeal.html">Was ist BunDeal</a>
+      <a href="datenschutz.html">Datenschutz</a>
+      <a href="impressum.html">Impressum</a>
+      <a class="language-switch" href="deal.html?lang=en" lang="en">EN</a>
+    </nav>
   </header>
   <main id="inhalt">
     <div class="wrap deal-layout">
@@ -48,12 +52,12 @@
         </div>
         <div class="notice" data-referral-box></div>
         <section class="community" data-community>
-          <h2>Temperatur</h2>
-          <p data-temperature>Temperatur 0</p>
+          <h2>Empfehlungsanzahl</h2>
+          <p data-temperature>Empfehlungsanzahl 0</p>
           <div class="actions">
-            <button class="button button-secondary" type="button" data-vote="1">Hoch</button>
-            <button class="button button-secondary" type="button" data-vote="-1">Runter</button>
-            <button class="button button-secondary" type="button" data-favorite>Merken</button>
+            <button class="button button-secondary" type="button" data-vote="1">Empfehlen</button>
+            <button class="button button-secondary" type="button" data-favorite>Gefällt mir</button>
+            <button class="button button-secondary" type="button" data-share>Teilen</button>
           </div>
           <h2>Kommentare</h2>
           <div data-comments></div>
@@ -71,11 +75,11 @@
   <script src="js/config.js"></script>
   <script src="js/supabase-client.js"></script>
   <script src="js/utils.js"></script>
-  <script src="js/deals.js?v=11"></script>
-  <script src="js/community.js?v=1"></script>
+  <script src="js/deals.js?v=13"></script>
+  <script src="js/community.js?v=3"></script>
   <script src="js/tracking.js"></script>
   <script src="js/referrals.js?v=2"></script>
-  <script src="js/account-menu.js?v=2"></script>
+  <script src="js/account-menu.js?v=3"></script>
   <script src="js/site.js"></script>
 </body>
 </html>
